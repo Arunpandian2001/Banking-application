@@ -10,8 +10,8 @@
 
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
-		<label>User id </label> <input type="number" min=7001
-			name="customerid"> <br>
+		<label>Customer id </label> <input type="number" min=7001
+			name="customerid" placeholder="Enter Customer id"> <br>
 		<button name="action" value="searchuser">Search</button>
 
 	</form>

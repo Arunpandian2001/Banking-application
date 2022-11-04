@@ -12,7 +12,14 @@ public class TransactionPojo {
 	private double closingBalance;
 	private double amount;
 	private String mode;
+	private String timeInDate;
 	
+	public String getTimeInDate() {
+		return timeInDate;
+	}
+	public void setTimeInDate(String timeInDate) {
+		this.timeInDate = timeInDate;
+	}
 	public String getStatus() {
 		return status;
 	}

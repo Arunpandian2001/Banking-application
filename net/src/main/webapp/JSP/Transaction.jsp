@@ -6,7 +6,6 @@
 </head>
 <body>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
 	<h1>Transaction details</h1>
 
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
@@ -43,10 +42,11 @@ ${message}
 				<td>${element.value.getTransactionTypes()}</td>
 				<td>${element.value.getMode()}</td>
 				<td>${element.value.getAmount()}</td>
-				<td>${element.value.getTimeInMillis()}</td>
-				<td>${element.value.getClosingBalance()}</td>
+				<td><jsp:useBean id="day" class="java.util.Date" />
+  			  <c:set target="${day}" property="time" value="${element.value.getTimeInMillis()}"/> 
+  			  ${day}</td>
+  			   <td>${element.value.getClosingBalance()}</td>
 				<td>${element.value.getStatus()}</td>
-
 			</tr>
 		</c:forEach>
 

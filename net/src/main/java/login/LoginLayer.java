@@ -16,10 +16,15 @@ public class LoginLayer {
 			Storage.VALUES.setUserDetails();
 		}
 
-		if(Storage.VALUES.getUserDetails().containsKey(id) && Storage.VALUES.getUserDetails().get(id).getPassword().equals(password)) {
-			return true;
+		if(Storage.VALUES.getUserDetails().containsKey(id)) {
+			if(( Storage.VALUES.getUserDetails().get(id).getPassword().equals(password))) {
+				return true;
+			}else {
+				throw new CustomException("Entered password id is invalid");
+			}
+		}else {
+			throw new CustomException("Entered User id is invalid");
 		}
-		return false;
 	}
 	
 	public boolean isCustomer(long userId) {

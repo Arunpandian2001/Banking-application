@@ -25,7 +25,21 @@ public enum Storage {
 	private List<Accounts_pojo> userSpecificAccounts;
 	private Accounts_pojo currentAccountDetails;
 	private Map<String,RequestPojo> pendingRequestDetails;
+	private Map<String,RequestPojo> acceptedRequestDetails;
+	private Map<Long,Map<String,RequestPojo>> requestDetailsMap;
 	
+	public Map<Long, Map<String, RequestPojo>> getRequestDetailsMap() {
+		return requestDetailsMap;
+	}
+	public void setRequestDetailsMap() {
+		this.requestDetailsMap = requestDetailsMap;
+	}
+	public Map<String, RequestPojo> getAcceptedRequestDetails() {
+		return acceptedRequestDetails;
+	}
+	public void setAcceptedRequestDetails() throws CustomException {
+		this.acceptedRequestDetails = load.getAcceptedRequestMap();
+	}
 	public Map<Long, UserPojo> getUserDetails() {
 		return userDetails;
 	}
@@ -113,5 +127,7 @@ public enum Storage {
 		setRequestDetails();
 		setAccountDetails();
 		setCustomerDetails();
+		setAcceptedRequestDetails();
+		setRequestDetailsMap();
 	}
 }

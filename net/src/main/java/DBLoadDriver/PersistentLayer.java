@@ -4,9 +4,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import customexception.CustomException;
@@ -16,6 +14,7 @@ import pojo.CustomerPojo;
 import pojo.RequestPojo;
 import pojo.TransactionPojo;
 import pojo.UserPojo;
+import superclass.Storage;
 
 public class PersistentLayer implements PersistentLayerPathway{
 
@@ -73,7 +72,7 @@ public class PersistentLayer implements PersistentLayerPathway{
 			throw new CustomException("Exception occured while setting result statement",e);
 		}
 	}
-	
+
 	public Map<Long,UserPojo> getUserMap() throws CustomException{
 		String query="select * from USER_DETAILS;";
 		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
@@ -95,36 +94,15 @@ public class PersistentLayer implements PersistentLayerPathway{
 			} catch (SQLException e) {
 				throw new CustomException("Exception occured while setting result statement",e);
 			}
-			
+
 		} catch (SQLException e) {
 			throw new CustomException("Exception occured while setting prepared statement",e);
 		}
 	}
 
 
-	//	gets password of a specific id
-
-	public String getPasswordQuery(long id) throws CustomException {
-		String query="select PASSWORD FROM LOGIN_CREDENTIALS WHERE ID=?";
-		return getPassword(id,query);
-	}
-
-	private String getPassword(long id, String query) throws CustomException {
-		String password=null;
-		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
-			prepStatement.setLong(1, id);
-			try(ResultSet result=prepStatement.executeQuery()){
-				while(result.next()) {
-					password=result.getString(1);
-				}
-				return password;
-			}
-		} catch (SQLException e) {
-			throw new CustomException("Exception occured while setting prepared statement",e);
-		}	
-	}
-
 	//get every accounts in db
+
 
 	public Map<Long,Map<Long, Accounts_pojo>> getAllAccountsOfUser() throws CustomException {
 		String query="SELECT * FROM ACCOUNTS_DETAILS";
@@ -311,17 +289,21 @@ public class PersistentLayer implements PersistentLayerPathway{
 				throw new CustomException("Exception occured while setting prepared statement",e);
 			}	
 		}
-
-		String query="SELECT * FROM TRANSACTION_DETAILS WHERE CUSTOMER_ID=? AND ACCOUNT_NUMBER=? ORDER BY TIME DESC LIMIT 5;";
-		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
-			prepStatement.setLong(1, customerId);
-			prepStatement.setLong(2, accountNumber[0]);
-			try(ResultSet result=prepStatement.executeQuery()){
-				return getTransactionResult(result);
+		if(Storage.VALUES.getAccountDetails().get(customerId).containsKey(accountNumber[0])) {
+			String query="SELECT * FROM TRANSACTION_DETAILS WHERE CUSTOMER_ID=? AND ACCOUNT_NUMBER=? ORDER BY TIME DESC LIMIT 5;";
+			try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+				prepStatement.setLong(1, customerId);
+				prepStatement.setLong(2, accountNumber[0]);
+				try(ResultSet result=prepStatement.executeQuery()){
+					return getTransactionResult(result);
+				}
+			} catch (SQLException e) {
+				throw new CustomException("Exception occured while setting prepared statement",e);
 			}
-		} catch (SQLException e) {
-			throw new CustomException("Exception occured while setting prepared statement",e);
+		}else {
+			throw new CustomException("Account number is invalid");
 		}
+
 	}
 	private Map<Long, Map<String, TransactionPojo>> getTransactionResult(ResultSet result) throws CustomException {
 		Map<Long, Map<String, TransactionPojo>> map=new LinkedHashMap<>();
@@ -377,38 +359,6 @@ public class PersistentLayer implements PersistentLayerPathway{
 		}	
 
 	}
-//	@Override
-//	public List<RequestPojo> getRequestDetails() throws CustomException {
-//		String query="select * from TRANSACTION_REQUESTS where STATUS='Request pending'";
-//		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
-//			try(ResultSet result=prepStatement.executeQuery()){
-//				return getRequstDetails(result);
-//			}
-//		} catch (SQLException e) {
-//			throw new CustomException("Exception occured while setting prepared statement",e);
-//		}
-//	}
-//	private List<RequestPojo> getRequstDetails(ResultSet result) throws CustomException {
-//		try {
-//			List<RequestPojo> list=new ArrayList<>();
-//			while(result.next()) {
-//				RequestPojo pojo=new RequestPojo();
-//				pojo.setCustomerId(result.getLong(1));
-//				pojo.setAccountNumber(result.getLong(2));
-//				pojo.setReferenceId(result.getString(3));
-//				pojo.setAmount(result.getDouble(4));
-//				pojo.setRequestedTime(result.getLong(5));
-//				pojo.setStatus(result.getString(7));
-//				list.add(pojo);
-//			}
-//			return list;
-//		} catch (SQLException e) {
-//			throw new CustomException("Exception occured while setting result statement",e);
-//
-//		}
-//	}
-	
-	
 	@Override
 	public void updateRequestStatus(RequestPojo request,String referenceId) throws CustomException {
 		String query="UPDATE TRANSACTION_REQUESTS SET STATUS=? , PROCESSED_TIME=? WHERE REFERENCE_ID=?";
@@ -453,42 +403,54 @@ public class PersistentLayer implements PersistentLayerPathway{
 		return getRequestMapProcess(query);
 	}
 
+	@Override
+	public Map<String, RequestPojo> getAcceptedRequestMap() throws CustomException {
+		String query="select * from TRANSACTION_REQUESTS where STATUS='Accepted' ";
+		return getRequestMapProcess(query);
+	}
+
+
 	private Map<String, RequestPojo> getRequestMapProcess(String query) throws CustomException {
 		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
 			try(ResultSet result=prepStatement.executeQuery()){
-				return getRequstMapResult(result);
+				Map<String,RequestPojo> map=new LinkedHashMap<>();
+				try {
+					while(result.next()) {
+						RequestPojo pojo=new RequestPojo();
+						pojo.setCustomerId(result.getLong(1));
+						pojo.setAccountNumber(result.getLong(2));
+						pojo.setReferenceId((result.getString(3)));
+						pojo.setAmount(result.getDouble(4));
+						pojo.setRequestedTime(result.getLong(5));
+						pojo.setProcessdeTime(result.getLong(6));
+						pojo.setStatus(result.getString(7));
+						pojo.setType(result.getString(8));
+						map.put(pojo.getReferenceId(), pojo);
+					}
+					return map;
+				} catch (SQLException e) {
+					throw new CustomException("Exception occured while setting result statement",e);
+				}		
 			}
 		} catch (SQLException e) {
 			throw new CustomException("Exception occured while setting prepared statement",e);
 		}
 
 	}
-	private Map<String, RequestPojo> getRequstMapResult(ResultSet result) throws CustomException {
 
-		Map<String,RequestPojo> map=new LinkedHashMap<>();
-		try {
-			while(result.next()) {
-				RequestPojo pojo=new RequestPojo();
-				pojo.setCustomerId(result.getLong(1));
-				pojo.setAccountNumber(result.getLong(2));
-				pojo.setReferenceId((result.getString(3)));
-				pojo.setAmount(result.getDouble(4));
-				pojo.setRequestedTime(result.getLong(5));
-				pojo.setProcessdeTime(result.getLong(6));
-				pojo.setStatus(result.getString(7));
-				pojo.setType(result.getString(8));
-				map.put(pojo.getReferenceId(), pojo);
-			}
-			return map;
-		} catch (SQLException e) {
-			throw new CustomException("Exception occured while setting result statement",e);
-		}
-	}
 	@Override
 	public void declinedRequestInTransaction(double amount, String referenceId,long customerId) throws CustomException {
 		String query="update TRANSACTION_DETAILS SET CLOSING_BALANCE=CLOSING_BALANCE+? WHERE REFERENCE_ID=? AND CUSTOMER_ID=?";
 		updateRequest(amount,referenceId,customerId,query);
 	}
+	@Override
+	public void acceptedRequestInTransaction(double amount, String referenceId, long customerId)
+			throws CustomException {
+		String query="update TRANSACTION_DETAILS SET CLOSING_BALANCE=CLOSING_BALANCE-? WHERE REFERENCE_ID=? AND CUSTOMER_ID=?";
+		updateRequest(amount,referenceId,customerId,query);
+
+	}
+
 	private void updateRequest(double amount,String referenceId,long customerId,String query) throws CustomException {
 		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
 			prepStatement.setDouble(1, amount);
@@ -498,13 +460,81 @@ public class PersistentLayer implements PersistentLayerPathway{
 			throw new CustomException("Exception occured while setting prepared statement",e);
 		}
 	}
-	@Override
-	public void acceptedRequestInTransaction(double amount, String referenceId, long customerId)
-			throws CustomException {
-		String query="update TRANSACTION_DETAILS SET CLOSING_BALANCE=CLOSING_BALANCE-? WHERE REFERENCE_ID=? AND CUSTOMER_ID=?";
-		updateRequest(amount,referenceId,customerId,query);
 
+	public Map<Long,Map<String,RequestPojo>> getRequestDetailsMap() throws CustomException{
+		String query="SELECT * FROM TRANSACTION_REQUESTS ";
+		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+			try(ResultSet result=prepStatement.executeQuery()){
+				int i=0;
+				Map<Long,Map<String,RequestPojo>> map=new LinkedHashMap<>();
+				try {
+					while(result.next()) {
+						RequestPojo pojo=new RequestPojo();
+						pojo.setCustomerId(result.getLong(1));
+						pojo.setAccountNumber(result.getLong(2));
+						pojo.setReferenceId((result.getString(3)));
+						pojo.setAmount(result.getDouble(4));
+						pojo.setRequestedTime(result.getLong(5));
+						pojo.setProcessdeTime(result.getLong(6));
+						pojo.setStatus(result.getString(7));
+						pojo.setType(result.getString(8));
+						if(i>0 && map.containsKey(pojo.getCustomerId())) {
+							map.get(pojo.getCustomerId()).put(pojo.getReferenceId(), pojo);
+						}
+						else {
+							Map<String, RequestPojo> innerMap=new LinkedHashMap<>();
+							innerMap.put(pojo.getReferenceId(),pojo);
+							map.put(pojo.getCustomerId(),innerMap);
+						}
+						++i;					}
+					return map;
+				} catch (SQLException e) {
+					throw new CustomException("Exception occured while setting result statement",e);
+				}
+			} 
+		}catch (SQLException e) {
+			throw new CustomException("Exception occured while setting prepared statement",e);
+		}
 	}
-	
 
+	public boolean isUserIdpresent(long customerId) throws CustomException {
+		String query="SELECT * FROM TRANSACTION_REQUESTS WHERE CUSTOMER_ID=? AND STATUS='Request pending'";
+		int i = 0;
+		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+			prepStatement.setLong(1, customerId);
+			try(ResultSet result=prepStatement.executeQuery()){
+				while(result.next())
+				{
+					i=result.getRow();
+
+				}
+				if(i==0) {
+					throw new CustomException("Customer id is not present in table");
+
+				}
+			} 
+			return true;
+		}catch (SQLException e) {
+			throw new CustomException("Exception occured while setting prepared statement",e);
+		} 
+	}
+
+	public boolean isAccountNumberpresent(long accountNumber) throws CustomException {
+		String query="SELECT * FROM TRANSACTION_REQUESTS WHERE ACCOUNT_NUMBER=? AND STATUS='Request pending'";
+		int i=0;
+		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+			prepStatement.setLong(1, accountNumber);
+			try(ResultSet result=prepStatement.executeQuery()){
+				while(result.next()) {
+					i=result.getRow();
+				}
+				if(i==0) {
+					throw new CustomException("Account number is not present in table");
+				}
+			} 
+			return true;
+		}catch (SQLException e) {
+			throw new CustomException("Exception occured while setting prepared statement",e);
+		} 
+	}
 }

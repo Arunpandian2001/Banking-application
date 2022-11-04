@@ -12,16 +12,15 @@
 
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
-		<label>User id </label> <input type="number" min=7001
-			name="customerid" required> <br>
+		<label>Customer id </label> <input type="number" min=7001
+			name="customerid" required placeholder="Enter Customer Id"> <br>
 			<label>Account number </label> <input type="number" min=60000000
-			name="accountnumber" > <br>
+			name="accountnumber" placeholder="Enter Account Number"> <br>
 		<button name="action" value="accountsearch">Search</button>
-<!-- 		<button name="action" value="allaccount">Show all</button>
- -->
 	</form>
 	<table>
 		<tr>
+		<th>CUSTOMER_ID</th>
 			<th>ACCOUNT_NUMBER</th>
 			<th>ACCOUNT_TYPE</th>
 			<th>BALANCE</th>
@@ -31,6 +30,7 @@
 		</tr>
 	<c:forEach var="element" items="${accountdetails}">
 		<tr>
+		<td>${element.getCustomerId()}</td>
 		<td>${element.getAccountNumber()}</td>
 		<td>${element.getAccountType()}</td>
 		<td>${element.getBalance()}</td>

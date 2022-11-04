@@ -10,8 +10,22 @@ public class RequestPojo {
 	private long processdeTime;
 	private String status;
 	private String type;
+	private String requestedTimeInDate;
+	private String processedTimeInDate;
 	
 	
+	public String getProcessedTimeInDate() {
+		return processedTimeInDate;
+	}
+	public void setProcessedTimeInDate(String processedTimeInDate) {
+		this.processedTimeInDate = processedTimeInDate;
+	}
+	public String getRequestedTimeInDate() {
+		return requestedTimeInDate;
+	}
+	public void setRequestedTimeInDate(String requestedTimeInDate) {
+		this.requestedTimeInDate = requestedTimeInDate;
+	}
 	public long getProcessdeTime() {
 		return processdeTime;
 	}

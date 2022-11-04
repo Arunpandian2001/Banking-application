@@ -10,21 +10,20 @@
 
 	<%@ page import="pojo.RequestPojo"%>
 
+	${message}
+
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		<label>User id </label> <input type="number" min=7001
-			name="customerid" required> <br> <label>Account
-			number </label> <input type="number" min=60000000 name="accountnumber">
-		<br>
+			name="customerid" placeholder="Enter Customer Id"> <br>
+		<label>Account number </label> <input type="number" min=60000000
+			name="accountnumber" placeholder="Enter Account Number"> <br>
 
 		<button name="action" value="accepttransaction">Accept</button>
 		<button name="action" value="rejecttransaction">Reject</button>
 
-
 	</form>
-	
-		${message}
-	
+
 	<table>
 		<tr>
 			<th>CUSTOMER_ID</th>
@@ -38,21 +37,43 @@
 
 
 		</tr>
+
+
+
 		<c:forEach var="element" items="${pendingrequestmap}">
-			<tr>
-				<td>${element.value.getCustomerId()}</td>
-				<td>${element.value.getAccountNumber()}</td>
-				<td>${element.value.getReferenceId()}</td>
-				<td>${element.value.getAmount()}</td>
-				<td>${element.value.getRequestedTime()}</td>
-				<td>${element.value.getProcessdeTime()}</td>
-				<td>${element.value.getStatus()}</td>
+
+			<form action="<%=request.getContextPath()%>/ProcessServlet"
+				method="post" target="adminFrame">
+				<input type="hidden" value="${element.value.getReferenceId()}"
+					name="referenceid">
+
+				<tr>
 
 
-			</tr>
+					<td>${element.value.getCustomerId()}</td>
+					<td>${element.value.getAccountNumber()}</td>
+					<td>${element.value.getReferenceId()}</td>
+					<td>${element.value.getAmount()}</td>
+					<td><jsp:useBean id="requestedday" class="java.util.Date" /> <c:set
+							target="${requestedday}" property="time"
+							value="${element.value.getRequestedTime()}"></c:set>${requestedday}
+					</td>
+					<td><jsp:useBean id="processedday" class="java.util.Date" /> <c:set
+							target="${processedday}" property="time"
+							value="${element.value.getProcessdeTime()}"></c:set>${processedday}
+					</td>
+					<td>${element.value.getStatus()}</td>
+					<td><button name="action" value="acceptintable">Accept</button></td>
+					<td><button name="action" value="rejectintable">Reject</button></td>
+
+
+				</tr>
+
+			</form>
+
 		</c:forEach>
-
 	</table>
+
 
 
 

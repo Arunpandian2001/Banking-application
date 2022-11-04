@@ -1,6 +1,8 @@
 package com.servlet;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,10 +47,7 @@ public class ProcessServlet extends HttpServlet {
 	public ProcessServlet() {
 		// TODO Auto-generated constructor stub
 		try {
-			Storage.VALUES.setCustomerDetails();
-			Storage.VALUES.setUserDetails();
-			Storage.VALUES.setAccountDetails();
-			Storage.VALUES.setRequestDetails();
+			Storage.VALUES.setBasicData();
 		} catch (CustomException e) {
 			e.printStackTrace();
 		}
@@ -77,6 +76,12 @@ public class ProcessServlet extends HttpServlet {
 	}
 
 
+	private List<Long> displayAccounts(HttpServletRequest request, HttpServletResponse response) throws CustomException {
+		HttpSession session=request.getSession(false);
+		long userId=(long)session.getAttribute("userid");
+		return customerMethod.getList(userId);
+	}
+	
 	private void forwardRequest(HttpServletRequest request, HttpServletResponse response,String url) throws ServletException, IOException {
 		RequestDispatcher req = request.getRequestDispatcher(url);
 		req.forward(request, response);
@@ -102,25 +107,25 @@ public class ProcessServlet extends HttpServlet {
 					Storage.VALUES.setUserId(userId);
 					if(login.isCustomer(userId)) {
 						userPojo=Storage.VALUES.getUserDetails().get(userId);
-						List<Long> accountNumbers=customerMethod.getList(userId);//
-						session.setAttribute("accountlist", accountNumbers);//
 						session.setAttribute("name",userPojo.getName());
 						forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
+						break;
+
 					}
 					else {
 						userPojo=Storage.VALUES.getUserDetails().get(userId);
 						session.setAttribute("name", userPojo.getName());
 						forwardRequest(request, response, URLEnum.ADMINLOGIN.getURL());
+						break;
+
 					}
-				}else {
-					request.setAttribute("wrongPassword", "Wrong id/password");
-					forwardRequest(request, response, URLEnum.LOGOUT.getURL());
 				}
+
 			} catch (CustomException e) {
-				// TODO Auto-generated catch block
+				request.setAttribute("wrongPassword",e.getMessage());
+				forwardRequest(request, response, URLEnum.LOGOUT.getURL());
 				e.printStackTrace();
 			}
-
 			break;
 		}
 
@@ -151,6 +156,13 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "ToDeposit":{
+			
+			try {
+				request.setAttribute("accountlist", displayAccounts(request,response));
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
 			break;
 		}
@@ -159,20 +171,25 @@ public class ProcessServlet extends HttpServlet {
 			Storage.VALUES.setAccountNumber(accountNumber);
 			double amount=Double.parseDouble(request.getParameter("amount"));
 			try {
-				if(customerMethod.toDeposit(amount)) {
-					request.setAttribute("message", "Deposit successfull");
+				customerMethod.toDeposit(amount);
+				request.setAttribute("message", "Deposit successfull");
 
-				}else {
-					request.setAttribute("message", "Deposit failed");
-				}
 			} catch (CustomException e) {
-				// TODO Auto-generated catch block
+				request.setAttribute("message", e.getMessage());
+				forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
+
 				e.printStackTrace();
 			}
 			forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
 			break;
 		}
 		case "ToWithdraw":{
+			try {
+				request.setAttribute("accountlist", displayAccounts(request,response));
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
 
 			break;
@@ -182,20 +199,25 @@ public class ProcessServlet extends HttpServlet {
 			Storage.VALUES.setAccountNumber(accountNumber);
 			double amount=Double.parseDouble(request.getParameter("amount"));
 			try {
-				if(customerMethod.toWithdraw(amount)) {
-					request.setAttribute("message", "Withdraw requested");
+				customerMethod.toWithdraw(amount);
+				request.setAttribute("message", "Withdraw requested");
 
-				}else {
-					request.setAttribute("message", "Withdraw failed");
-				}
 			} catch (CustomException e) {
-				// TODO Auto-generated catch block
+				request.setAttribute("message", e.getMessage());
+				forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
+
 				e.printStackTrace();
 			}
 			forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
 			break;
 		}
 		case "ToTransfer":{
+			try {
+				request.setAttribute("accountlist", displayAccounts(request,response));
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
 
 			break;
@@ -207,16 +229,20 @@ public class ProcessServlet extends HttpServlet {
 			double amount=Double.parseDouble(request.getParameter("amount"));
 			String password=(String)request.getParameter("password");
 			try {
-				if(customerMethod.transferAmount(receiverAccountNumber, amount, password)) {
-					request.setAttribute("message", "Transfer success");
-
-				}else {
-					request.setAttribute("message", "Transfer failed");
-				}
+				customerMethod.transferAmount(receiverAccountNumber, amount, password);
+				request.setAttribute("message", "Transfer success");
 				forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
 
 			} catch (CustomException e) {
-				// TODO Auto-generated catch block
+				try {
+					request.setAttribute("accountlist", displayAccounts(request,response));
+				} catch (CustomException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				request.setAttribute("message", e.getMessage());
+				forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
+
 				e.printStackTrace();
 			}
 			break;
@@ -247,6 +273,8 @@ public class ProcessServlet extends HttpServlet {
 					break;
 
 				}
+				ZoneId zoneId=ZoneId.systemDefault();
+				request.setAttribute("zoneid", Instant.ofEpochMilli(System.currentTimeMillis()).atZone(zoneId).toString());
 				request.setAttribute("transaction", map);
 				forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
 				break;
@@ -254,8 +282,8 @@ public class ProcessServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+				break;
 
-			
 		}
 		case "CustomerTransactionRequests":{
 			HttpSession session=request.getSession(false);
@@ -275,28 +303,24 @@ public class ProcessServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			break;
 		}
 
 		case "UserInformation":{
-			forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
+			List<CustomerPojo> list=new ArrayList<>();
+			try {
+				list=adminOperation.getCustomerDetails();
+				request.setAttribute("customerdetails", list);
+				forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
 
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		}
 
 		case "searchuser":{
-			if(request.getParameter("customerid").isEmpty()) {
-				List<CustomerPojo> list=new ArrayList<>();
-				try {
-					list=adminOperation.getCustomerDetails();
-					request.setAttribute("customerdetails", list);
-					forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
-
-				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			}else {
 				long searchId=Long.parseLong(request.getParameter("customerid"));
 				List<CustomerPojo> list=new ArrayList<>();
 				try {
@@ -312,8 +336,6 @@ public class ProcessServlet extends HttpServlet {
 				}
 				break;
 			}
-
-		}
 
 		case "AccountInformation":{
 			forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
@@ -350,13 +372,15 @@ public class ProcessServlet extends HttpServlet {
 					forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 					e.printStackTrace();
+				
 				}
 				break;
 			}
 		}
-		
+
 		case"AdminTransaction":{
 			forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 			break;
@@ -389,8 +413,10 @@ public class ProcessServlet extends HttpServlet {
 					forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 					e.printStackTrace();
+				
 				}
 				break;
 			}
@@ -413,75 +439,163 @@ public class ProcessServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			break;
 		}
 		
 		case "accepttransaction":{
+			Map<String,RequestPojo>map=null;
 			if(request.getParameter("accountnumber").isEmpty()) {
 				long customerId=Long.parseLong(request.getParameter("customerid"));
 				String status="Accepted";
 				try {
-					adminOperation.processRequest(customerId, status);
+					map=adminOperation.getRequestDetails();
+					adminOperation.processRequest(customerId,null, status);
 					request.setAttribute("message", "Accepted requests");
-//					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
-					response.sendRedirect(URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					map=adminOperation.getRequestDetails();
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
 					break;
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try {
+						map=adminOperation.getRequestDetails();
+					} catch (CustomException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					request.setAttribute("message", e.getMessage());
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					
 				}
 			}else {
 				long customerId=Long.parseLong(request.getParameter("customerid"));
 				long accountNumber=Long.parseLong(request.getParameter("accountnumber"));
 				String status="Accepted";
 				try {
-					adminOperation.processRequest(customerId, status,accountNumber);
+//					map=adminOperation.getRequestDetails();
+					
+					adminOperation.processRequest(customerId,null, status,accountNumber);
 					request.setAttribute("message", "Accepted requests");
-//					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
-					response.sendRedirect(URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					map=adminOperation.getRequestDetails();
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
 
 					break;
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try {
+						map=adminOperation.getRequestDetails();
+					} catch (CustomException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					request.setAttribute("message", e.getMessage());
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					
 				}
 			}
+			break;
+
 		}
 
 		case "rejecttransaction":{
+			Map<String,RequestPojo>map=null;
 			if(request.getParameter("accountnumber").isEmpty()) {
 				long customerId=Long.parseLong(request.getParameter("customerid"));
 				String status="Rejected";
 				try {
-					adminOperation.processRequest(customerId, status);
+					map=adminOperation.getRequestDetails();
+					adminOperation.processRequest(customerId,null, status);
 					request.setAttribute("message", "Rejected requests");
-//					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
-					response.sendRedirect(URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					map=adminOperation.getRequestDetails();
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
 
 					break;
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try {
+						map=adminOperation.getRequestDetails();
+					} catch (CustomException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					request.setAttribute("message",e.getMessage());
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+
 				}
+				break;
 			}else {
 				long customerId=Long.parseLong(request.getParameter("customerid"));
 				long accountNumber=Long.parseLong(request.getParameter("accountnumber"));
 				String status="Rejected";
 				try {
-					adminOperation.processRequest(customerId, status,accountNumber);
+					map=adminOperation.getRequestDetails();
+					adminOperation.processRequest(customerId, null,status,accountNumber);
 					request.setAttribute("message", "Rejected requests");
-//					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
-					response.sendRedirect(URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					map=adminOperation.getRequestDetails();
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+					break;
+				} catch (CustomException e) {
+					try {
+						map=adminOperation.getRequestDetails();
+					} catch (CustomException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					request.setAttribute("message",e.getMessage());
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
 
-					
+				}
+			}
+			break;
+		}
+
+		case "acceptintable":{
+				Map<String,RequestPojo>map=null;
+	
+				String referenceId=request.getParameter("referenceid");
+				String status="Accepted";
+				try {
+					map=adminOperation.getRequestDetails();
+					adminOperation.processRequest(0,referenceId, status);
+					request.setAttribute("message", "Accepted requests");
+					map=adminOperation.getRequestDetails();
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+	
 					break;
 				} catch (CustomException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
+				break;
+
 		}
 
+		case "rejectintable":{
+				Map<String,RequestPojo>map=null;
+	
+				String referenceId=request.getParameter("referenceid");
+				String status="Rejected";
+				try {
+					map=adminOperation.getRequestDetails();
+					adminOperation.processRequest(0,referenceId, status);
+					request.setAttribute("message", "Rejected requests");
+					map=adminOperation.getRequestDetails();
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+	
+					break;
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+	
+			}
 		}
 
 	}

@@ -46,7 +46,9 @@
 				<td>${element.value.getTransactionTypes()}</td>
 				<td>${element.value.getMode()}</td>
 				<td>${element.value.getAmount()}</td>
-				<td>${element.value.getTimeInMillis()}</td>
+				<td><jsp:useBean id="day" class="java.util.Date" /> <c:set
+						target="${day}" property="time"
+						value="${element.value.getTimeInMillis()}"></c:set>${day}</td>
 				<td>${element.value.getClosingBalance()}</td>
 				<td>${element.value.getStatus()}</td>
 

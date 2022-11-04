@@ -10,13 +10,11 @@
 	<h1>Welcome to AP International Bank</h1>
 	<div>
 		<form  action="<%= request.getContextPath() %>/ProcessServlet" method="post">
-		User Id <input type="number" min=7000 name="userId" required><br>
-		Password <input type="password" name="password" required><br>
+		User Id <input type="number" min=7000 name="userId" required placeholder="Enter user id"><br>
+		Password <input type="password" name="password" required placeholder="Enter password"><br>
 		<input type="submit" name=action value="Login">
 		
 	
-	<!-- <input type="submit" name="action" value="AdminLogin">
-	<input type="submit" name="action" value="CustomerLogin"> -->
 	</form> 
 	</div>
 

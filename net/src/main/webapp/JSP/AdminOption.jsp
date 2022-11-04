@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Admin menu</title>
 </head>
 <body>
 	<form action="<%=request.getContextPath()%>/ProcessServlet"

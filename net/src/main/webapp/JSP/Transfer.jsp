@@ -19,9 +19,9 @@
 		<label>Receiver account number</label> <input type="number" min="60000000" name="receiver" required>
 	</div>
 	<div>
-		<label>Amount</label><input type="number" min="1" name="amount" required>
+		<label>Amount</label><input type="number" min="1" name="amount" required placeholder="Enter amount">
 	</div>
-	<div><label>Password</label><input type="password" name="password" required></div>
+	<div><label>Password</label><input type="password" name="password" required placeholder="Enter password"></div>
 	<div>
 	<button name="action" value="transfer">Proceed</button>
 	

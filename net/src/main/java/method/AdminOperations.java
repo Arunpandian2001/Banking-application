@@ -51,6 +51,9 @@ public class AdminOperations {
 	public Map<Long,List<Accounts_pojo>> getAccountDetails(long userId,Long... accountNumbers) throws CustomException {
 		int length = accountNumbers.length;
 		Map<Long, Accounts_pojo> map = Storage.VALUES.getAccountDetails().get(userId);
+		if(map==null){
+			throw new CustomException("Customer id not found ");
+		}
 		Map<Long,List<Accounts_pojo>> accountMap=new LinkedHashMap<>();
 		List<Accounts_pojo> list=new ArrayList<>();
 		if (length == 0) {
@@ -72,10 +75,15 @@ public class AdminOperations {
 
 	}
 	public Map<String, TransactionPojo> getTransactionDetails(long customerId,Long ...accountNumber) throws CustomException{
-
-		return load.getTransactions(customerId,accountNumber).get(customerId);
+		if(Storage.VALUES.getUserDetails().containsKey(customerId)) {
+			return load.getTransactions(customerId,accountNumber).get(customerId);
+		
+		}else {
+			throw new CustomException("Customer id is invalid");
+		}
 	}
-
+	
+	
 	public Map<String, RequestPojo> getRequestDetails() throws CustomException  {
 		Storage.VALUES.setPendingRequestDetails();
 		return Storage.VALUES.getPendingRequestDetails();
@@ -117,47 +125,79 @@ public class AdminOperations {
 		Storage.VALUES.setBasicData();
 	}
 
-	public void processRequest(long customerId,String status,Long ...accountNumbers) throws CustomException {
-		int length=accountNumbers.length;
-		if(length==0) {
-			if(status.equalsIgnoreCase("accepted")) {//accepted
-				Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-				for(Entry<String, RequestPojo> element:map.entrySet()) {
-					RequestPojo pojo=element.getValue();
-					if(pojo.getCustomerId()==customerId) {
-						acceptRequest(pojo);
-					}
-				}
-			}else {//declined
-				Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-				for(Entry<String, RequestPojo> element:map.entrySet()) {
-					RequestPojo pojo=element.getValue();
-					if(pojo.getCustomerId()==customerId) {
-						declineRequest(pojo);
-					}
-				}
-			}
-		}
-		else {
-			for(int i=0;i<length;i++) {//accepted
-				if(status.equalsIgnoreCase("accepted")) {
-					Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-					for(Entry<String, RequestPojo> element:map.entrySet()) {
-						RequestPojo pojo=element.getValue();
-						if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
-							acceptRequest(pojo);
-						}
-					}
-				}else {//declined
-					Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-					for(Entry<String, RequestPojo> element:map.entrySet()) {
-						RequestPojo pojo=element.getValue();
-						if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
+	public void processRequest(long customerId,String referenceId,String status,Long ...accountNumbers) throws CustomException {
+		
+		if(Storage.VALUES.getCustomerDetails().containsKey(customerId)) {
+				if(referenceId!=null) {
+					if(status.equalsIgnoreCase("accepted")) {//accepted
+						Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+							RequestPojo pojo=map.get(referenceId);
+							String ref=pojo.getReferenceId();
+							if(ref.equals(referenceId)) {
+								acceptRequest(pojo);
+							}
+						
+					}else {//declined
+						Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+						RequestPojo pojo=map.get(referenceId);
+						if(pojo.getReferenceId().equals(referenceId)) {
 							declineRequest(pojo);
 						}
 					}
 				}
-			}
+				else {
+					int length=accountNumbers.length;
+					if(length==0) {
+						if(load.isUserIdpresent(customerId)) {
+							if(status.equalsIgnoreCase("accepted")) {//accepted
+								Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+								for(Entry<String, RequestPojo> element:map.entrySet()) {
+									RequestPojo pojo=element.getValue();
+									if(pojo.getCustomerId()==customerId) {
+										acceptRequest(pojo);
+									}
+								}
+							}else {//declined
+								Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+								for(Entry<String, RequestPojo> element:map.entrySet()) {
+									RequestPojo pojo=element.getValue();
+									if(pojo.getCustomerId()==customerId) {
+										declineRequest(pojo);
+									}
+								}
+							}
+						}
+					}
+					else {
+						for(int i=0;i<length;i++) {//accepted
+							if(load.isUserIdpresent(customerId)) {
+								if(load.isAccountNumberpresent(accountNumbers[i])) {
+									if(status.equalsIgnoreCase("accepted")) {
+										Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+										for(Entry<String, RequestPojo> element:map.entrySet()) {
+											RequestPojo pojo=element.getValue();
+											if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
+												acceptRequest(pojo);
+											}
+										}
+									}else {//declined
+										Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+										for(Entry<String, RequestPojo> element:map.entrySet()) {
+											RequestPojo pojo=element.getValue();
+											if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
+												declineRequest(pojo);
+											}
+										}
+									}
+								}
+							}
+							
+						}
+					}
+				}
+		}else {
+			throw new CustomException("Customer id is invalid");
 		}
+		
 	}
 }

@@ -18,7 +18,7 @@
 			</select><br>
 			
 			 <label>Amount</label><input type="number" min=1 name="amount"
-				min="1" required><br>
+				min="1" required placeholder="Enter Amount"><br>
 			<button name="action" value="withdraw">Proceed</button>
 		</form>
 

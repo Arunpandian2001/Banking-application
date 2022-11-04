@@ -1,5 +1,8 @@
 package method;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,7 +45,7 @@ public class CustomerOperations extends User{
 	}
 
 	@Override
-	public boolean toDeposit( double amount) throws CustomException {
+	public void toDeposit( double amount) throws CustomException {
 		long userId=getUserId();
 		long accountNumber=getAccountNumber();
 		Map<Long, Map<Long, Accounts_pojo>> map=Storage.VALUES.getAccountDetails();
@@ -51,12 +54,11 @@ public class CustomerOperations extends User{
 			load.depositUpdate(amount,accountNumber);
 			map.get(userId).get(accountNumber).setBalance(load.getCurrentBalance(accountNumber));
 			updateDeposit(accountNumber,amount,getTime(),map.get(userId).get(accountNumber).getBalance());
-			return true;
 		}
-		return false;
+
 	}
 	@Override
-	public boolean toWithdraw(double amount) throws CustomException {
+	public void toWithdraw(double amount) throws CustomException {
 		
 		long userId=getUserId();
 		long accountNumber=getAccountNumber();
@@ -66,9 +68,7 @@ public class CustomerOperations extends User{
 			load.withdrawUpdate(amount,accountNumber);
 			map.get(userId).get(accountNumber).setBalance(load.getCurrentBalance(accountNumber));
 			updateWithdraw(accountNumber,amount,getTime(),map.get(userId).get(accountNumber).getBalance());
-			return true;
 		}
-		return false;
 	}
 	
 
@@ -119,27 +119,33 @@ public class CustomerOperations extends User{
 	}
 	
 	@Override
-	public boolean transferAmount(long receiverAccountNumber, double amount, String password) throws CustomException {
+	public void transferAmount(long receiverAccountNumber, double amount, String password) throws CustomException {
 		
 		long userId=getUserId();
 		long currentUserAccountNumber=getAccountNumber();
 		long receiverUserId=load.getAccountPojoQuery(receiverAccountNumber).getCustomerId();
 		Map<Long, Map<Long, Accounts_pojo>> map=Storage.VALUES.getAccountDetails();
 		
-		if(isSenderValid(userId,currentUserAccountNumber,amount) && isReceiverValid(receiverUserId,receiverAccountNumber) && currentUserAccountNumber!=receiverAccountNumber) {
-			if(password.equals(Storage.VALUES.getUserDetails().get(userId).getPassword()) ){
+		if((currentUserAccountNumber!=receiverAccountNumber)) {
+			if(isSenderValid(userId,currentUserAccountNumber,amount) && isReceiverValid(receiverUserId,receiverAccountNumber))  {
+				if(password.equals(Storage.VALUES.getUserDetails().get(userId).getPassword()) ){
 
-				load.depositUpdate(amount,receiverAccountNumber);
-				map.get(receiverUserId).get(receiverAccountNumber).setBalance(load.getCurrentBalance(receiverAccountNumber));
+					load.depositUpdate(amount,receiverAccountNumber);
+					map.get(receiverUserId).get(receiverAccountNumber).setBalance(load.getCurrentBalance(receiverAccountNumber));
 
-				load.withdrawUpdate(amount,currentUserAccountNumber);
-				map.get(userId).get(currentUserAccountNumber).setBalance(load.getCurrentBalance(currentUserAccountNumber));
+					load.withdrawUpdate(amount,currentUserAccountNumber);
+					map.get(userId).get(currentUserAccountNumber).setBalance(load.getCurrentBalance(currentUserAccountNumber));
 
-				updateTransaction(currentUserAccountNumber,receiverAccountNumber,amount,getTime(),map.get(userId).get(currentUserAccountNumber).getBalance(),map.get(receiverUserId).get(receiverAccountNumber).getBalance(),receiverUserId);
+					updateTransaction(currentUserAccountNumber,receiverAccountNumber,amount,getTime(),map.get(userId).get(currentUserAccountNumber).getBalance(),map.get(receiverUserId).get(receiverAccountNumber).getBalance(),receiverUserId);
+				}else {
+					throw new CustomException("The password entered is invalid");
+				}
 			}
-			return true;
+		}else {
+			throw new CustomException("The entered account number is invalid");
 		}
-		return false;
+		
+		
 	}
 	
 	private void updateTransaction(long curentUser, long receiver, double amount, long time, double currentUserBalance, double receiverBalance,long receiverId) throws CustomException {
@@ -187,25 +193,43 @@ public class CustomerOperations extends User{
 		return Storage.VALUES.getAccountNumber();
 	}
 	
-	private boolean isSenderValid(long userId,long accountNumber,double amount){
+	private boolean isSenderValid(long userId,long accountNumber,double amount) throws CustomException{
 
 		Accounts_pojo userAccountPojo=Storage.VALUES.getAccountDetails().get(userId).get(accountNumber);
 		CustomerPojo userCustomerDetails=Storage.VALUES.getCustomerDetails().get(userId);
 
-		if(userAccountPojo.getStatus().equalsIgnoreCase("active") && userAccountPojo.getBalance()>amount && userCustomerDetails.getStatus().equalsIgnoreCase("active")) {
-		return true;
+		if(userAccountPojo.getStatus().equalsIgnoreCase("active")) {
+			if(userAccountPojo.getBalance()>amount) {
+				if(userCustomerDetails.getStatus().equalsIgnoreCase("active")) {
+					if(amount>0) {
+						return true;
+					}else {
+						throw new CustomException("The amount enterd is in correct");
+					}
+				}else {
+					throw new CustomException("Your User account is inactive");
+				}
+			}else {
+				throw new CustomException("Your balance is insufficient to make deposit");
+			}
+		}else {
+			throw new CustomException("Your account is inactive");
 		}
-		return false;
 	}
 	
-	private boolean isReceiverValid(long receiverUserId,long receiverAccountNumber){
+	private boolean isReceiverValid(long receiverUserId,long receiverAccountNumber) throws CustomException{
 		Accounts_pojo receiverAccountPojo=Storage.VALUES.getAccountDetails().get(receiverUserId).get(receiverAccountNumber);
 		CustomerPojo receiverCustomerDetails=Storage.VALUES.getCustomerDetails().get(receiverUserId);
 
-		if(receiverAccountPojo.getStatus().equalsIgnoreCase("active") && receiverCustomerDetails.getStatus().equalsIgnoreCase("active")) {
-		return true;
+		if(receiverAccountPojo.getStatus().equalsIgnoreCase("active")) {
+			if(receiverCustomerDetails.getStatus().equalsIgnoreCase("active")) {
+				return true;
+			}else {
+				throw new CustomException("Reciever Customer account is inactive");
+			}
+		} else {
+			throw new CustomException("Reciever Bank account is inactive");
 		}
-		return false;
 	}
 
 	public Map<Long,Map<String,TransactionPojo>> getRecentTransaction(long customerId,Long...accountNumber) throws CustomException {
@@ -222,6 +246,12 @@ public class CustomerOperations extends User{
 			}
 		}
 		return returnMap;
+	}
+	
+	public String millisToString(long time) {
+		ZoneId zoneId=ZoneId.systemDefault();
+		return Instant.ofEpochMilli(time).atZone(zoneId).toString();
+		
 	}
 	
 }
