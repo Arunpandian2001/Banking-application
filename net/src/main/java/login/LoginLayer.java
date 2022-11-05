@@ -34,4 +34,11 @@ public class LoginLayer {
 		return false;
 	}
 	
+	public boolean isActive(long userId) {
+		if(Storage.VALUES.getCustomerDetails().get(userId).getStatus().equalsIgnoreCase("active")) {
+			return true;
+		}
+		return false;
+	}
+	
 }

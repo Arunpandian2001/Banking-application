@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import DBLoadDriver.PersistentLayer;
 import customexception.CustomException;
@@ -125,78 +126,145 @@ public class AdminOperations {
 		Storage.VALUES.setBasicData();
 	}
 
-	public void processRequest(long customerId,String referenceId,String status,Long ...accountNumbers) throws CustomException {
-		
-		if(Storage.VALUES.getCustomerDetails().containsKey(customerId)) {
-				if(referenceId!=null) {
-					if(status.equalsIgnoreCase("accepted")) {//accepted
+	public void processButtonInTable(String referenceId,String status) throws CustomException {
+		if(status.equalsIgnoreCase("accepted")) {//accepted
+			Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+				RequestPojo pojo=map.get(referenceId);
+				String ref=pojo.getReferenceId();
+				if(ref.equals(referenceId)) {
+					acceptRequest(pojo);
+				}
+			
+		}else {//declined
+			Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+			RequestPojo pojo=map.get(referenceId);
+			if(pojo.getReferenceId().equals(referenceId)) {
+				declineRequest(pojo);
+			}
+		}
+	}
+	
+	public void processAllRequests(long customerId,String status,Long ...accountNumbers) throws CustomException {
+		if(load.isUserIdpresent(customerId)) {
+			if(status.equalsIgnoreCase("accepted")) {//accepted
+				Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+				for(Entry<String, RequestPojo> element:map.entrySet()) {
+					RequestPojo pojo=element.getValue();
+					if(pojo.getCustomerId()==customerId) {
+						acceptRequest(pojo);
+					}
+				}
+			}else {//declined
+				Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
+				for(Entry<String, RequestPojo> element:map.entrySet()) {
+					RequestPojo pojo=element.getValue();
+					if(pojo.getCustomerId()==customerId) {
+						declineRequest(pojo);
+					}
+				}
+			}
+		}
+	}
+	
+	public void processSpecificRequests(long customerId, String status, Long... accountNumbers) throws CustomException {
+		int length=accountNumbers.length;
+		for(int i=0;i<length;i++) {//accepted
+			if(load.isUserIdpresent(customerId)) {
+				if(load.isAccountNumberpresent(accountNumbers[i])) {
+					if(status.equalsIgnoreCase("accepted")) {
 						Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-							RequestPojo pojo=map.get(referenceId);
-							String ref=pojo.getReferenceId();
-							if(ref.equals(referenceId)) {
+						for(Entry<String, RequestPojo> element:map.entrySet()) {
+							RequestPojo pojo=element.getValue();
+							if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
 								acceptRequest(pojo);
 							}
-						
+						}
 					}else {//declined
 						Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-						RequestPojo pojo=map.get(referenceId);
-						if(pojo.getReferenceId().equals(referenceId)) {
-							declineRequest(pojo);
+						for(Entry<String, RequestPojo> element:map.entrySet()) {
+							RequestPojo pojo=element.getValue();
+							if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
+								declineRequest(pojo);
+							}
 						}
 					}
+				}
+			}
+			
+		}
+	}
+	
+	public void processRequest(long customerId,String referenceId,String status,Long ...accountNumbers) throws CustomException {
+
+		if(referenceId!=null) {
+			processButtonInTable(referenceId,status);
+		}
+		else {
+			if(Storage.VALUES.getCustomerDetails().containsKey(customerId)) {
+				int length=accountNumbers.length;
+				if(length==0) {
+					processAllRequests(customerId, status, accountNumbers);
 				}
 				else {
-					int length=accountNumbers.length;
-					if(length==0) {
-						if(load.isUserIdpresent(customerId)) {
-							if(status.equalsIgnoreCase("accepted")) {//accepted
-								Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-								for(Entry<String, RequestPojo> element:map.entrySet()) {
-									RequestPojo pojo=element.getValue();
-									if(pojo.getCustomerId()==customerId) {
-										acceptRequest(pojo);
-									}
-								}
-							}else {//declined
-								Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-								for(Entry<String, RequestPojo> element:map.entrySet()) {
-									RequestPojo pojo=element.getValue();
-									if(pojo.getCustomerId()==customerId) {
-										declineRequest(pojo);
-									}
-								}
-							}
-						}
-					}
-					else {
-						for(int i=0;i<length;i++) {//accepted
-							if(load.isUserIdpresent(customerId)) {
-								if(load.isAccountNumberpresent(accountNumbers[i])) {
-									if(status.equalsIgnoreCase("accepted")) {
-										Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-										for(Entry<String, RequestPojo> element:map.entrySet()) {
-											RequestPojo pojo=element.getValue();
-											if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
-												acceptRequest(pojo);
-											}
-										}
-									}else {//declined
-										Map<String,RequestPojo> map=Storage.VALUES.getPendingRequestDetails();
-										for(Entry<String, RequestPojo> element:map.entrySet()) {
-											RequestPojo pojo=element.getValue();
-											if(pojo.getCustomerId()==customerId && pojo.getAccountNumber()==accountNumbers[i]) {
-												declineRequest(pojo);
-											}
-										}
-									}
-								}
-							}
-							
-						}
-					}
+					processSpecificRequests(customerId,status,accountNumbers);
 				}
+			}else {
+				throw new CustomException("Customer id is invalid");
+			}
+		}
+	}
+	
+	public boolean checkMobile(String mobile) throws CustomException {
+		if(Pattern.matches("[\\d]{10}", mobile)) {
+			return true;
 		}else {
-			throw new CustomException("Customer id is invalid");
+			throw new CustomException("The entered mobile number is invalid");
+		}
+	}
+	
+	public boolean checkEmail(String email) throws CustomException {
+		if(Pattern.compile("^[^.](.+)@[^.]{1}(.+)[^.@]$").matcher(email).find()) {
+			return true;
+		}else {
+			throw new CustomException("The entered email is invalid");
+		}
+	}
+	
+	public boolean checkAadhar(String aadhar) throws CustomException {
+		if(Pattern.matches("^\\d{4}\\d{4}\\d{4}$", aadhar)) {
+			return true;
+		}else {
+			throw new CustomException("The entered Aadhar number is invalid");
+		}
+	}
+	
+	public boolean checkPanNumber(String pan) throws CustomException {
+		if(Pattern.matches("[A-Z]{5}[0-9]{4}[A-Z]{1}", pan)) {
+			return true;
+		}else {
+			throw new CustomException("The entered PAN number is invalid");
+		}
+	}
+	public boolean checkCredentials(String mobile, String email, String aadhar, String pan) throws CustomException {
+		if(checkMobile(mobile) && checkEmail(email) && checkAadhar(aadhar) && checkPanNumber(pan)) {
+			return true;
+		}
+		return false;
+	}
+	public CustomerPojo createCustomer(CustomerPojo customerPojo)throws CustomException  {
+		customerPojo=load.createCustomer(customerPojo);
+		Storage.VALUES.setBasicData();
+		return customerPojo;
+	}
+	
+	public Accounts_pojo createAccount(Accounts_pojo pojo)throws CustomException  {
+		if(Storage.VALUES.getCustomerDetails().containsKey(pojo.getCustomerId())) {
+			pojo=load.createAccount(pojo);
+			Storage.VALUES.setBasicData();
+			return pojo;
+		}
+		else {
+			throw new CustomException("Customer id is invaild");
 		}
 		
 	}

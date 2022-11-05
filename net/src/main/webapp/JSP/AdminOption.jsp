@@ -30,6 +30,12 @@
 		<br>
 		<button name="action" value=PendingWithdrawRequests>Approve Withdraw requests</button>
 		<br>
+		
+		<button name="action" value=ToCreateCustomer>Create customer</button>
+		<br>
+		
+		<button name="action" value=ToCreateAccount>Create Account</button>
+		<br>
 
 	</form>
 	<form action="../ProcessServlet" method="get" target=_parent>

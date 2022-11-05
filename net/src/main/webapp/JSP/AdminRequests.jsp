@@ -7,21 +7,36 @@
 <body>
 
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 	<%@ page import="pojo.RequestPojo"%>
 
 	${message}
 
+
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
+		
 		<label>User id </label> <input type="number" min=7001
 			name="customerid" placeholder="Enter Customer Id"> <br>
+			
+		
+				
+			<label> Account number</label><select name="accountnumber" id="accountnumber" >
+		<option hidden="hidden" value=""  > Select account number</option>
+		
+		<c:forEach var="element" items="${accountmap}">
+		<option value="${element.key}" >${element.key}</option>
+		</c:forEach>
+		</select>
+		
+		
 		<label>Account number </label> <input type="number" min=60000000
 			name="accountnumber" placeholder="Enter Account Number"> <br>
 
 		<button name="action" value="accepttransaction">Accept</button>
 		<button name="action" value="rejecttransaction">Reject</button>
-
+		
 	</form>
 
 	<table>
@@ -56,11 +71,13 @@
 					<td>${element.value.getAmount()}</td>
 					<td><jsp:useBean id="requestedday" class="java.util.Date" /> <c:set
 							target="${requestedday}" property="time"
-							value="${element.value.getRequestedTime()}"></c:set>${requestedday}
+							value="${element.value.getRequestedTime()}"></c:set>
+		<fmt:formatDate value="${requestedday}" pattern="dd-MM-yyyy hh:mm:ss "/>
 					</td>
 					<td><jsp:useBean id="processedday" class="java.util.Date" /> <c:set
 							target="${processedday}" property="time"
 							value="${element.value.getProcessdeTime()}"></c:set>${processedday}
+									<fmt:formatDate value="${processedday}" pattern="dd-MM-yyyy hh:mm:ss "/>
 					</td>
 					<td>${element.value.getStatus()}</td>
 					<td><button name="action" value="acceptintable">Accept</button></td>

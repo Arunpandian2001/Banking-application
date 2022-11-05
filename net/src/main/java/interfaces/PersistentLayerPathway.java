@@ -50,5 +50,9 @@ public interface PersistentLayerPathway {
 	boolean isUserIdpresent(long customerId) throws CustomException;
 	
 	boolean isAccountNumberpresent(long accountNumber) throws CustomException;
+
+	CustomerPojo createCustomer(CustomerPojo customerPojo) throws CustomException;
+
+	Accounts_pojo createAccount(Accounts_pojo pojo)throws CustomException;
 	
 }

@@ -16,7 +16,10 @@ public enum URLEnum {
 	TOWITHDRAW("JSP/Withdraw.jsp"),
 	TOTRANSFER("JSP/Transfer.jsp"),
 	TRANSACTIONDETAILS("JSP/Transaction.jsp"),
-	CUSTOMERTRANSACTIONREQUESTS("JSP/CustomerTransactionRequest.jsp"),	
+	CUSTOMERTRANSACTIONREQUESTS("JSP/CustomerTransactionRequest.jsp"),
+	CREATECUSTOMER("JSP/CreateCustomer.jsp"),
+	ACTIVITYREQUEST("JSP/ActivityRequestPage.jsp"),
+	CREATEACCOUNT("JSP/CreateAccount.jsp"),
 	LOGOUT("JSP/Login.jsp");
 	String url;
 	

@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -536,5 +537,65 @@ public class PersistentLayer implements PersistentLayerPathway{
 		}catch (SQLException e) {
 			throw new CustomException("Exception occured while setting prepared statement",e);
 		} 
+	}
+	@Override
+	public CustomerPojo createCustomer(CustomerPojo customerPojo) throws CustomException {
+		long customerId=0;
+		String userQuery="INSERT INTO USER_DETAILS (NAME,DOB,MOBILE,EMAIL,ADDRESS,ROLE,PASSWORD) VALUES(?,?,?,?,?,?,?)";
+		String customerQuery="INSERT INTO CUSTOMER_DETAILS (CUSTOMER_ID,AADHAR_NUMBER,PANCARD,STATUS) VALUES (?,?,?,?)";
+
+		try(PreparedStatement prepStatement=getConnection().prepareStatement(userQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+				PreparedStatement prepStatement1=getConnection().prepareStatement(customerQuery)){
+			prepStatement.setString(1, customerPojo.getName());
+			prepStatement.setString(2, customerPojo.getDob());
+			prepStatement.setString(3, customerPojo.getMobile());
+			prepStatement.setString(4, customerPojo.getEmail());
+			prepStatement.setString(5, customerPojo.getAddress());
+			prepStatement.setString(6, "CUSTOMER");
+			customerPojo.setPassword(customerPojo.getName()+"@123");
+			prepStatement.setString(7,customerPojo.getPassword() );
+			prepStatement.execute();
+			try(ResultSet result=prepStatement.getGeneratedKeys()){
+				while(result.next()) {
+					customerId=Long.parseLong(result.getString(1));
+				}
+			}
+			customerPojo.setId(customerId);
+			customerPojo.setCustomerId(customerId);//
+			prepStatement1.setLong(1, customerId);
+			prepStatement1.setLong(2, customerPojo.getAadhar());
+			prepStatement1.setString(3, customerPojo.getPanNumber());
+			prepStatement1.setString(4, "ACTIVE");
+			prepStatement1.execute();
+		} catch (SQLException e) {
+			throw new CustomException("Error occured while setting connection",e);
+		}
+		
+
+		return customerPojo;
+	}
+	@Override
+	public Accounts_pojo createAccount(Accounts_pojo pojo) throws CustomException {
+		long accountNumber=0;
+		String accountQuery="INSERT INTO ACCOUNTS_DETAILS (CUSTOMER_ID,ACCOUNT_TYPE,BRANCH,BALANCE,STATUS) VALUES (?,?,?,?,?)";
+		try(PreparedStatement prepStatement=getConnection().prepareStatement(accountQuery, PreparedStatement.RETURN_GENERATED_KEYS)){
+			prepStatement.setLong(1, pojo.getCustomerId());
+			prepStatement.setString(2, pojo.getAccountType());
+			prepStatement.setString(3, pojo.getBranch());
+			prepStatement.setDouble(4, pojo.getBalance());
+			prepStatement.setString(5, pojo.getStatus());
+			prepStatement.execute();
+
+			try(ResultSet result=prepStatement.getGeneratedKeys()){
+				while(result.next()) {
+					accountNumber=Long.parseLong(result.getString(1));
+				}
+			}
+			pojo.setAccountNumber(accountNumber);
+		} catch (SQLException e) {
+			throw new CustomException("Error occured while setting connection",e);
+		}
+		return pojo;
+	
 	}
 }

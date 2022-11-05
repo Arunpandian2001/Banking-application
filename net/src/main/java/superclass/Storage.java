@@ -28,12 +28,12 @@ public enum Storage {
 	private Map<String,RequestPojo> acceptedRequestDetails;
 	private Map<Long,Map<String,RequestPojo>> requestDetailsMap;
 	
-	public Map<Long, Map<String, RequestPojo>> getRequestDetailsMap() {
-		return requestDetailsMap;
-	}
-	public void setRequestDetailsMap() {
-		this.requestDetailsMap = requestDetailsMap;
-	}
+//	public Map<Long, Map<String, RequestPojo>> getRequestDetailsMap() {
+//		return requestDetailsMap;
+//	}
+//	public void setRequestDetailsMap() {
+//		this.requestDetailsMap = requestDetailsMap;
+//	}
 	public Map<String, RequestPojo> getAcceptedRequestDetails() {
 		return acceptedRequestDetails;
 	}
@@ -128,6 +128,6 @@ public enum Storage {
 		setAccountDetails();
 		setCustomerDetails();
 		setAcceptedRequestDetails();
-		setRequestDetailsMap();
+//		setRequestDetailsMap();
 	}
 }

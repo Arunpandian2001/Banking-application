@@ -6,6 +6,8 @@
 </head>
 <body>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
 <%@  page import="java.util.Map" %>
 	${message}
 
@@ -25,8 +27,8 @@
 		<td> ${element.value.getReferenceId()} </td>
 	<td>${element.value.getAmount()}</td>
 	<td><jsp:useBean id="day" class="java.util.Date"/>
-	<c:set target="${day}" property="time" value="${element.value.getRequestedTime()}"></c:set>${day}
-		</td>
+	<c:set target="${day}" property="time" value="${element.value.getRequestedTime()}"></c:set>
+	<fmt:formatDate value="${day }" pattern="dd-MM-yyyy hh:mm:ss "/>		</td>
 		<td>${element.value.getStatus()}</td>
 	
 	</tr>

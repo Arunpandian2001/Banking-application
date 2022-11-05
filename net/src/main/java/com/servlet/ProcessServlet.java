@@ -1,13 +1,10 @@
 package com.servlet;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import customexception.CustomException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import com.servletenum.URLEnum;
 
+import customexception.CustomException;
 import login.LoginLayer;
 import method.AdminOperations;
 import method.CustomerOperations;
@@ -105,20 +103,26 @@ public class ProcessServlet extends HttpServlet {
 			try {
 				if(login.isAccountAvailable(userId, password)) {
 					Storage.VALUES.setUserId(userId);
-					if(login.isCustomer(userId)) {
-						userPojo=Storage.VALUES.getUserDetails().get(userId);
-						session.setAttribute("name",userPojo.getName());
-						forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
-						break;
+						if(login.isCustomer(userId)) {
+							if(login.isActive(userId)) {
+							customerPojo=Storage.VALUES.getCustomerDetails().get(userId);
+							session.setAttribute("name",customerPojo.getName());
+							forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
+							break;
 
+						}
+						else {
+							forwardRequest(request,response,URLEnum.ACTIVITYREQUEST.getURL());
+							break;
+						}
 					}
-					else {
-						userPojo=Storage.VALUES.getUserDetails().get(userId);
-						session.setAttribute("name", userPojo.getName());
-						forwardRequest(request, response, URLEnum.ADMINLOGIN.getURL());
-						break;
+						else {
+							userPojo=Storage.VALUES.getUserDetails().get(userId);
+							session.setAttribute("name", userPojo.getName());
+							forwardRequest(request, response, URLEnum.ADMINLOGIN.getURL());
+							break;
 
-					}
+						}
 				}
 
 			} catch (CustomException e) {
@@ -167,20 +171,26 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "deposit":{
-			long accountNumber=Long.parseLong(request.getParameter("Accounts"));
-			Storage.VALUES.setAccountNumber(accountNumber);
-			double amount=Double.parseDouble(request.getParameter("amount"));
-			try {
-				customerMethod.toDeposit(amount);
-				request.setAttribute("message", "Deposit successfull");
+			if(!request.getParameter("Accounts").equals("")) {
+				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
+				Storage.VALUES.setAccountNumber(accountNumber);
+				double amount=Double.parseDouble(request.getParameter("amount"));
+				try {
+					customerMethod.toDeposit(amount);
+					request.setAttribute("message", "Deposit successfull");
+					request.setAttribute("accountlist", displayAccounts(request,response));
+					forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
+				} catch (CustomException e) {
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
 
-			} catch (CustomException e) {
-				request.setAttribute("message", e.getMessage());
+					e.printStackTrace();
+				}
+			}else {
+				request.setAttribute("message","Please select an account");
 				forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
-
-				e.printStackTrace();
 			}
-			forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
+			
 			break;
 		}
 		case "ToWithdraw":{
@@ -195,20 +205,27 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "withdraw":{
-			long accountNumber=Long.parseLong(request.getParameter("Accounts"));
-			Storage.VALUES.setAccountNumber(accountNumber);
-			double amount=Double.parseDouble(request.getParameter("amount"));
-			try {
-				customerMethod.toWithdraw(amount);
-				request.setAttribute("message", "Withdraw requested");
+			if(!request.getParameter("Accounts").equals("")) {
+				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
+				Storage.VALUES.setAccountNumber(accountNumber);
+				double amount=Double.parseDouble(request.getParameter("amount"));
+				try {
+					customerMethod.toWithdraw(amount);
+					request.setAttribute("message", "Withdraw requested");
+					request.setAttribute("accountlist", displayAccounts(request,response));
+					forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
 
-			} catch (CustomException e) {
-				request.setAttribute("message", e.getMessage());
+				} catch (CustomException e) {
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
+
+					e.printStackTrace();
+				}
+			}else {
+				request.setAttribute("message","Please select an account");
 				forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
-
-				e.printStackTrace();
 			}
-			forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
+			
 			break;
 		}
 		case "ToTransfer":{
@@ -223,28 +240,35 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "transfer":{
-			long userAccountNumber=Long.parseLong(request.getParameter("Accounts"));
-			Storage.VALUES.setAccountNumber(userAccountNumber);
-			long receiverAccountNumber=Long.parseLong(request.getParameter("receiver"));
-			double amount=Double.parseDouble(request.getParameter("amount"));
-			String password=(String)request.getParameter("password");
-			try {
-				customerMethod.transferAmount(receiverAccountNumber, amount, password);
-				request.setAttribute("message", "Transfer success");
-				forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
-
-			} catch (CustomException e) {
+			if(!request.getParameter("Accounts").equals("")) {
+				long userAccountNumber=Long.parseLong(request.getParameter("Accounts"));
+				Storage.VALUES.setAccountNumber(userAccountNumber);
+				long receiverAccountNumber=Long.parseLong(request.getParameter("receiver"));
+				double amount=Double.parseDouble(request.getParameter("amount"));
+				String password=(String)request.getParameter("password");
 				try {
+					customerMethod.transferAmount(receiverAccountNumber, amount, password);
+					request.setAttribute("message", "Transfer success");
 					request.setAttribute("accountlist", displayAccounts(request,response));
-				} catch (CustomException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}
-				request.setAttribute("message", e.getMessage());
-				forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
+					forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
 
-				e.printStackTrace();
+				} catch (CustomException e) {
+					try {
+						request.setAttribute("accountlist", displayAccounts(request,response));
+					} catch (CustomException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
+
+					e.printStackTrace();
+				}
+			}else {
+				request.setAttribute("message","Please select an account");
+				forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
 			}
+			
 			break;
 		}
 		case "ToTransactionDetails":{
@@ -261,26 +285,29 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "transactiondetails":{
-			HttpSession session=request.getSession(false);
-			long userId=(long)session.getAttribute("userid");
-			long accountNumber=Long.parseLong(request.getParameter("Accounts"));
-			Map<String,TransactionPojo> map=new LinkedHashMap<>();
-			try {
-				map=customerMethod.getRecentTransaction(userId,accountNumber).get(userId);
-				if(map==null) {
-					request.setAttribute("message", "No transaction available");
+			if(!request.getParameter("Accounts").equals("")) {
+				HttpSession session=request.getSession(false);
+				long userId=(long)session.getAttribute("userid");
+				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
+				Map<String,TransactionPojo> map=new LinkedHashMap<>();
+				try {
+					map=customerMethod.getRecentTransaction(userId,accountNumber).get(userId);
+					if(map==null) {
+						request.setAttribute("message", "No transaction available");
+						forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
+						break;
+
+					}
+					request.setAttribute("transaction", map);
 					forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
 					break;
-
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				ZoneId zoneId=ZoneId.systemDefault();
-				request.setAttribute("zoneid", Instant.ofEpochMilli(System.currentTimeMillis()).atZone(zoneId).toString());
-				request.setAttribute("transaction", map);
+			}else {
+				request.setAttribute("message","Please select an account");
 				forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
-				break;
-			} catch (CustomException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 				break;
 
@@ -442,6 +469,7 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		
+		
 		case "accepttransaction":{
 			Map<String,RequestPojo>map=null;
 			if(request.getParameter("accountnumber").isEmpty()) {
@@ -472,7 +500,6 @@ public class ProcessServlet extends HttpServlet {
 				long accountNumber=Long.parseLong(request.getParameter("accountnumber"));
 				String status="Accepted";
 				try {
-//					map=adminOperation.getRequestDetails();
 					
 					adminOperation.processRequest(customerId,null, status,accountNumber);
 					request.setAttribute("message", "Accepted requests");
@@ -595,6 +622,90 @@ public class ProcessServlet extends HttpServlet {
 				}
 				break;
 	
+			}
+		case"ToCreateCustomer":{
+			
+			forwardRequest(request,response,URLEnum.CREATECUSTOMER.getURL());
+				
+				break;
+			}
+		case"CreateCustomer":{
+			
+			String name=request.getParameter("name");
+			String dob=request.getParameter("dob");
+			String mobile=request.getParameter("mobile");
+			String email=request.getParameter("email");
+			String address=request.getParameter("address");
+			String aadhar=request.getParameter("aadhar");
+			String pan=request.getParameter("pan");
+			String accountType=request.getParameter("account type");
+			String branch=request.getParameter("branch");
+			double balance=Double.parseDouble(request.getParameter("minimum balance"));
+			CustomerPojo customerPojo=new CustomerPojo();
+			Accounts_pojo accountPojo =new Accounts_pojo();
+			
+			try {
+				if(adminOperation.checkCredentials(mobile,email,aadhar,pan)) {
+					customerPojo.setName(name);
+					customerPojo.setDob(dob);
+					customerPojo.setMobile(mobile);
+					customerPojo.setEmail(email);
+					customerPojo.setAddress(address);
+					customerPojo.setAadhar(Long.parseLong(aadhar));
+					customerPojo.setPanNumber(pan);
+					accountPojo.setAccountType(accountType);
+					accountPojo.setBranch(branch);
+					accountPojo.setBalance(balance);
+					accountPojo.setStatus("ACTIVE");
+					customerPojo=adminOperation.createCustomer(customerPojo);
+					accountPojo.setCustomerId(customerPojo.getCustomerId());
+					accountPojo=adminOperation.createAccount(accountPojo);
+					Storage.VALUES.setBasicData();
+					request.setAttribute("message","Customer created successfully \n User id: "+customerPojo.getCustomerId()+
+							"\n  Password :"+customerPojo.getPassword()+ "\n Account number : "+accountPojo.getAccountNumber());
+					forwardRequest(request,response,URLEnum.CREATECUSTOMER.getURL());
+					
+				}
+			} catch (CustomException e) {
+				request.setAttribute("errormessage", e.getMessage());
+				forwardRequest(request,response,URLEnum.CREATECUSTOMER.getURL());
+				e.printStackTrace();
+			}
+			
+				break;
+			}
+		case"ToCreateAccount":{
+				forwardRequest(request,response,URLEnum.CREATEACCOUNT.getURL());
+	
+				break;
+			}
+		case "CreateAccount":{
+				String customerId=request.getParameter("customerid");
+				String accountType=request.getParameter("account type");
+				String branch=request.getParameter("branch");
+				double balance=Double.parseDouble(request.getParameter("minimum balance"));
+				Accounts_pojo accountPojo =new Accounts_pojo();
+				try {
+						accountPojo.setCustomerId(Long.parseLong(customerId));
+						accountPojo.setAccountType(accountType);
+						accountPojo.setBranch(branch);
+						accountPojo.setBalance(balance);
+						accountPojo.setStatus("ACTIVE");
+						accountPojo=adminOperation.createAccount(accountPojo);
+						Storage.VALUES.setBasicData();
+						request.setAttribute("message","Account created successfully \n Account number : "+accountPojo.getAccountNumber());
+						forwardRequest(request,response,URLEnum.CREATEACCOUNT.getURL());
+				} catch (CustomException e) {
+					request.setAttribute("errormessage", e.getMessage());
+					forwardRequest(request,response,URLEnum.CREATEACCOUNT.getURL());
+					e.printStackTrace();
+				}
+				break;	
+			}
+		
+		case"":{
+			
+				break;
 			}
 		}
 

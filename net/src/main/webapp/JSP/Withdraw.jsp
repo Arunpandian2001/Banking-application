@@ -12,6 +12,8 @@
 		<form action="<%= request.getContextPath() %>/ProcessServlet"
 			method="post"  >
 			<label> Accounts</label> <select name="Accounts" id="Accounts">
+							<option value="" hidden="hidden">Select account number</option>
+			
 				<c:forEach var="element" items="${accountlist}">
 					<option value="${element}">${element}</option>
 				</c:forEach>

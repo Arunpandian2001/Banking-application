@@ -4,19 +4,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Transaction requests</title>
 </head>
 <body>
 
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 	<%@ page import="pojo.TransactionPojo"%>
 
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		<label>User id </label> <input type="number" min=7001
-			name="customerid" required> <br> <label>Account
-			number </label> <input type="number" min=60000000 name="accountnumber">
+			name="customerid" required placeholder="Enter Customer Id"> <br> <label>Account
+			number </label> <input type="number" min=60000000 name="accountnumber" placeholder="Enter Account number">
 		<br>
 		<button name="action" value="searchtransaction">Search</button>
 
@@ -48,7 +49,9 @@
 				<td>${element.value.getAmount()}</td>
 				<td><jsp:useBean id="day" class="java.util.Date" /> <c:set
 						target="${day}" property="time"
-						value="${element.value.getTimeInMillis()}"></c:set>${day}</td>
+						value="${element.value.getTimeInMillis()}"></c:set>
+				<fmt:formatDate value="${day}" pattern="dd-MM-yyyy hh:mm:ss "/>
+						</td>
 				<td>${element.value.getClosingBalance()}</td>
 				<td>${element.value.getStatus()}</td>
 

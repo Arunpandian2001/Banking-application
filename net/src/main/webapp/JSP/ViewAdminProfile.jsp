@@ -24,9 +24,7 @@
 
 	<h3>
 		Address :<%=pojo.getAddress()%></h3>
-	<button>Edit</button>
-	<form action="ProcessServlet" method="post" target="adminFrame">
-		<button name="action" value="admin">Back</button>
-	</form>
+	<button>Save</button>
+	
 </body>
 </html>
