@@ -71,4 +71,6 @@ public interface PersistentLayerPathway {
 	Map<Long,Map<String,RequestPojo>> getRequestDetailsMap() throws CustomException;
 	
 	void processActivityStatus (ActivityPojo pojo) throws CustomException;
+	
+	void updateProfile(UserPojo pojo) throws CustomException;
 }

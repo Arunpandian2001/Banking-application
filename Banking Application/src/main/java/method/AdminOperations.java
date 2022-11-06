@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import com.util.getvalues.InputChecks;
+
 import DBLoadDriver.PersistentLayer;
 import customexception.CustomException;
 import interfaces.PersistentLayerPathway;
@@ -15,11 +17,13 @@ import pojo.ActivityPojo;
 import pojo.CustomerPojo;
 import pojo.RequestPojo;
 import pojo.TransactionPojo;
+import pojo.UserPojo;
 import superclass.Storage;
 
 public class AdminOperations {
 
 	private PersistentLayerPathway load=new PersistentLayer();
+	private InputChecks inputCheck=new InputChecks();
 
 	public List<CustomerPojo> getCustomerDetails(Long ... customerIds) throws CustomException {
 		int length=customerIds.length;
@@ -50,6 +54,18 @@ public class AdminOperations {
 	}
 
 
+	public List<Long> getList(long id) throws CustomException{
+		Map<Long, Accounts_pojo> map=Storage.VALUES.getAccountDetails().get(id);
+		List<Long> accountsList=new ArrayList<>();
+		for( Map.Entry<Long, Accounts_pojo> element:map.entrySet()) {
+			if(element.getValue().getStatus().equalsIgnoreCase("active")) {
+				accountsList.add(element.getValue().getAccountNumber());
+			}
+		}
+		
+		return accountsList;
+	}
+	
 	public Map<Long,List<Accounts_pojo>> getAccountDetails(long userId,Long... accountNumbers) throws CustomException {
 		int length = accountNumbers.length;
 		Map<Long, Accounts_pojo> map = Storage.VALUES.getAccountDetails().get(userId);
@@ -215,39 +231,9 @@ public class AdminOperations {
 		}
 	}
 	
-	public boolean checkMobile(String mobile) throws CustomException {
-		if(Pattern.matches("[\\d]{10}", mobile)) {
-			return true;
-		}else {
-			throw new CustomException("The entered mobile number is invalid");
-		}
-	}
 	
-	public boolean checkEmail(String email) throws CustomException {
-		if(Pattern.compile("^[^.](.+)@[^.]{1}(.+)[^.@]$").matcher(email).find()) {
-			return true;
-		}else {
-			throw new CustomException("The entered email is invalid");
-		}
-	}
-	
-	public boolean checkAadhar(String aadhar) throws CustomException {
-		if(Pattern.matches("^\\d{4}\\d{4}\\d{4}$", aadhar)) {
-			return true;
-		}else {
-			throw new CustomException("The entered Aadhar number is invalid");
-		}
-	}
-	
-	public boolean checkPanNumber(String pan) throws CustomException {
-		if(Pattern.matches("[A-Z]{5}[0-9]{4}[A-Z]{1}", pan)) {
-			return true;
-		}else {
-			throw new CustomException("The entered PAN number is invalid");
-		}
-	}
 	public boolean checkCredentials(String mobile, String email, String aadhar, String pan) throws CustomException {
-		if(checkMobile(mobile) && checkEmail(email) && checkAadhar(aadhar) && checkPanNumber(pan)) {
+		if(inputCheck.checkMobile(mobile) && inputCheck.checkEmail(email) && inputCheck.checkAadhar(aadhar) && inputCheck.checkPanNumber(pan)) {
 			return true;
 		}
 		return false;
@@ -327,6 +313,25 @@ public class AdminOperations {
 		Map<Long,ActivityPojo> map= Storage.VALUES.getPendingActivityRequest();
 		for(Map.Entry<Long, ActivityPojo> element:map.entrySet()) {
 			deactivateAccount(element.getKey());
+		}
+	}
+	
+	public void updateProfile(UserPojo userPojo) throws CustomException {
+		if(userPojo.getDob()!=null) {
+			load.updateProfile(userPojo);
+		}
+		else if(userPojo.getEmail()!=null) {
+			if(inputCheck.checkEmail(userPojo.getEmail())) {
+				load.updateProfile(userPojo);
+			}
+		}
+		else if(userPojo.getMobile()!=null) {
+			if(inputCheck.checkMobile(userPojo.getMobile())) {
+				load.updateProfile(userPojo);
+			}
+		}
+		else if(userPojo.getAddress()!=null) {
+			load.updateProfile(userPojo);
 		}
 	}
 }

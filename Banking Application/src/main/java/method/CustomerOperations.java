@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.util.getvalues.InputChecks;
+
 import DBLoadDriver.PersistentLayer;
 import customexception.CustomException;
 import interfaces.PersistentLayerPathway;
@@ -16,13 +18,14 @@ import pojo.ActivityPojo;
 import pojo.CustomerPojo;
 import pojo.RequestPojo;
 import pojo.TransactionPojo;
+import pojo.UserPojo;
 import superclass.Storage;
 import superclass.User;
 
 public class CustomerOperations extends User{
 	
 	private PersistentLayerPathway load=new PersistentLayer();
-	
+	private InputChecks inputCheck=new InputChecks();
 	private long getTime() {
 		return System.currentTimeMillis();
 	}
@@ -292,5 +295,24 @@ public class CustomerOperations extends User{
 		pojo.setRequestedTime(time);
 		pojo.setStatus("PENDING");
 		load.postAccountActiveRequest(pojo);
+	}
+
+	public void updateProfile(UserPojo userPojo) throws CustomException {
+		if(userPojo.getDob()!=null) {
+			load.updateProfile(userPojo);
+		}
+		else if(userPojo.getEmail()!=null) {
+			if(inputCheck.checkEmail(userPojo.getEmail())) {
+				load.updateProfile(userPojo);
+			}
+		}
+		else if(userPojo.getMobile()!=null) {
+			if(inputCheck.checkMobile(userPojo.getMobile())) {
+				load.updateProfile(userPojo);
+			}
+		}
+		else if(userPojo.getAddress()!=null) {
+			load.updateProfile(userPojo);
+		}
 	}
 }

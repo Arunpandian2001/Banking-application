@@ -35,7 +35,7 @@ import superclass.Storage;
 
 public class ProcessServlet extends HttpServlet {
 	private static CustomerPojo customerPojo;
-	private static UserPojo userPojo;
+	private static UserPojo adminPojo;
 	private CustomerOperations customerMethod=new CustomerOperations();
 	private AdminOperations adminOperation=new AdminOperations();
 	private static final long serialVersionUID = 1L;
@@ -75,6 +75,20 @@ public class ProcessServlet extends HttpServlet {
 	}
 
 
+	private CustomerPojo getCurrentCustomerDetails(HttpServletRequest request) {
+		HttpSession session=request.getSession(false);
+		long userId=(long) session.getAttribute("userid");
+		customerPojo=Storage.VALUES.getCustomerDetails().get(userId);
+		return customerPojo;
+	}
+	
+	private UserPojo getCurrentUserDetails(HttpServletRequest request) {
+		HttpSession session=request.getSession(false);
+		long userId=(long) session.getAttribute("userid");
+		adminPojo=Storage.VALUES.getUserDetails().get(userId);
+		return adminPojo;
+	}
+	
 	private List<Long> displayAccounts(HttpServletRequest request, HttpServletResponse response) throws CustomException {
 		HttpSession session=request.getSession(false);
 		long userId=(long)session.getAttribute("userid");
@@ -95,8 +109,6 @@ public class ProcessServlet extends HttpServlet {
 		String action=request.getParameter("action");
 		switch(action) {
 		case "logout":{
-			HttpSession session=request.getSession(false);
-			session.invalidate();
 			response.sendRedirect(URLEnum.LOGOUT.getURL());
 			break;
 		}
@@ -112,7 +124,7 @@ public class ProcessServlet extends HttpServlet {
 					Storage.VALUES.setUserId(userId);
 					if(login.isCustomer(userId)) {
 						if(login.isActive(userId)) {
-							customerPojo=Storage.VALUES.getCustomerDetails().get(userId);
+							customerPojo=getCurrentCustomerDetails(request);
 							session.setAttribute("name",customerPojo.getName());
 							forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
 							break;
@@ -125,8 +137,8 @@ public class ProcessServlet extends HttpServlet {
 						}
 					}
 					else {
-						userPojo=Storage.VALUES.getUserDetails().get(userId);
-						session.setAttribute("name", userPojo.getName());
+						adminPojo=getCurrentUserDetails(request);
+						session.setAttribute("name", adminPojo.getName());
 						forwardRequest(request, response, URLEnum.ADMINLOGIN.getURL());
 						break;
 
@@ -142,20 +154,197 @@ public class ProcessServlet extends HttpServlet {
 		}
 
 		case "CustomerProfile":{
-			request.setAttribute("userDetails", customerPojo);
+			request.setAttribute("userDetails", getCurrentCustomerDetails(request));
 			forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
 			break;
 		}
 		case "AdminProfile":{
-			request.setAttribute("userDetails", userPojo);
+			request.setAttribute("userDetails", getCurrentUserDetails(request));
 			forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
 			break;
 		}
+		case "save":{
+			customerPojo=getCurrentCustomerDetails(request);
+			if(!request.getParameter("dob").equals(customerPojo.getDob())) {
+				String dob=request.getParameter("dob");
+				customerPojo.setDob(dob);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setDob(dob);
+				pojo.setId(customerPojo.getId());
+				try {
+					customerMethod.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",customerPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
+				break;
+			}
+			else if(!request.getParameter("email").equals(customerPojo.getEmail())) {
+				String email=request.getParameter("email");
+				customerPojo.setEmail(email);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setEmail(email);
+				pojo.setId(customerPojo.getId());
+
+				try {
+					customerMethod.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",customerPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
+				break;
+			}
+			else if(!request.getParameter("mobile").equals(customerPojo.getMobile())) {
+				String mobile=request.getParameter("mobile");
+				customerPojo.setMobile(mobile);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setMobile(mobile);
+				pojo.setId(customerPojo.getId());
+
+				try {
+					customerMethod.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",customerPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
+				break;
+			}
+			
+			else if(!request.getParameter("address").equals(customerPojo.getAddress())) {
+				String address=request.getParameter("address");
+				customerPojo.setAddress(address);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setAddress(address);
+				pojo.setId(customerPojo.getId());
+
+				try {
+					customerMethod.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",customerPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
+				break;
+			}
+			break;
+		}
+		
+		case "admin_save":{
+			adminPojo=getCurrentUserDetails(request);
+			if(!request.getParameter("dob").equals(adminPojo.getDob())) {
+				String dob=request.getParameter("dob");
+				adminPojo.setDob(dob);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setDob(dob);
+				pojo.setId(adminPojo.getId());
+
+				try {
+					adminOperation.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",adminPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
+				break;
+			}
+			else if(!request.getParameter("email").equals(adminPojo.getEmail())) {
+				String email=request.getParameter("email");
+				adminPojo.setEmail(email);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setEmail(email);
+				pojo.setId(adminPojo.getId());
+
+				try {
+					adminOperation.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",adminPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
+				break;
+			}
+			else if(!request.getParameter("mobile").equals(adminPojo.getMobile())) {
+				String mobile=request.getParameter("mobile");
+				adminPojo.setMobile(mobile);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setMobile(mobile);
+				pojo.setId(adminPojo.getId());
+
+				try {
+					adminOperation.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",adminPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
+				break;
+			}
+			
+			else if(!request.getParameter("address").equals(adminPojo.getAddress())) {
+				String address=request.getParameter("address");
+				adminPojo.setAddress(address);
+				CustomerPojo pojo=new CustomerPojo();
+				pojo.setAddress(address);
+				pojo.setId(adminPojo.getId());
+
+				try {
+					adminOperation.updateProfile(pojo);
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				request.setAttribute("userDetails",adminPojo);
+				request.setAttribute("message", "Changes saved");
+				forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
+				break;
+			}
+			break;
+		}
+		
 		case "customer":{
+			HttpSession session=request.getSession(false);
+			long userId=(long)session.getAttribute("userid");
+			Map<Long,Accounts_pojo> map=Storage.VALUES.getuserSpecificAccounts(userId);
+			request.setAttribute("accountmap", map);
 			forwardRequest(request, response, URLEnum.CUSTOMER.getURL());
 			break;
 		}
 		case "admin":{
+			Map<String,RequestPojo>map=null;
+			try {
+				map=adminOperation.getRequestDetails();
+				if(map.isEmpty()) {
+					request.setAttribute("message", "No requests pending");
+					forwardRequest(request, response, URLEnum.ADMIN.getURL());
+					break;
+				}
+				else {
+					request.setAttribute("pendingrequestmap", map);
+					forwardRequest(request, response, URLEnum.ADMIN.getURL());
+					break;
+				}
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			forwardRequest(request, response, URLEnum.ADMIN.getURL());
 			break;
 		}
@@ -383,12 +572,46 @@ public class ProcessServlet extends HttpServlet {
 		}
 
 		case "AccountInformation":{
+			request.setAttribute("searchid", "");
 			forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 
 			break;
 		}
+		
+		case "displayaccount":{
+			long searchId=Long.parseLong(request.getParameter("customerid"));
+			List<Long> list=new ArrayList<>();
+			try {
+				list=adminOperation.getList(searchId);
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			request.setAttribute("searchid", searchId);
+			request.setAttribute("accountlist", list);
+			forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
+
+			break;
+		}
+		
+		case "displayaccounttransaction":{
+			long searchId=Long.parseLong(request.getParameter("customerid"));
+			List<Long> list=new ArrayList<>();
+			try {
+				list=adminOperation.getList(searchId);
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			request.setAttribute("accountlist", list);
+			request.setAttribute("searchid",searchId);
+			forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
+
+			break;
+		}
+		
 		case "accountsearch":{
-			if(request.getParameter("accountnumber").isEmpty()) {
+			if(request.getParameter("Accounts").isEmpty()) {
 				long searchId=Long.parseLong(request.getParameter("customerid"));
 				Map<Long,List<Accounts_pojo>> map=new LinkedHashMap<>();
 
@@ -397,7 +620,7 @@ public class ProcessServlet extends HttpServlet {
 					List<Accounts_pojo> list=map.get(searchId);
 					request.setAttribute("accountdetails", list);
 					forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
-
+					
 				} catch (CustomException e) {
 					// TODO Auto-generated catch block
 					request.setAttribute("message", e.getMessage());
@@ -407,7 +630,7 @@ public class ProcessServlet extends HttpServlet {
 				break;
 			}else {
 				long searchId=Long.parseLong(request.getParameter("customerid"));
-				long accountNumber=Long.parseLong(request.getParameter("accountnumber"));
+				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
 				Map<Long,List<Accounts_pojo>> map=new LinkedHashMap<>();
 
 				try {
@@ -427,13 +650,14 @@ public class ProcessServlet extends HttpServlet {
 		}
 
 		case"AdminTransaction":{
+			request.setAttribute("searchid", "");
 			forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 			break;
 		}
 		case "searchtransaction":{
 			Map<String,TransactionPojo> map=new LinkedHashMap<>();
 
-			if(request.getParameter("accountnumber").isEmpty()) {
+			if(request.getParameter("Accounts").isEmpty()) {
 				long searchId=Long.parseLong(request.getParameter("customerid"));
 
 				try {
@@ -450,7 +674,7 @@ public class ProcessServlet extends HttpServlet {
 				break;
 			}else {
 				long searchId=Long.parseLong(request.getParameter("customerid"));
-				long accountNumber=Long.parseLong(request.getParameter("accountnumber"));
+				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
 
 				try {
 					map=adminOperation.getTransactionDetails(searchId,accountNumber);
@@ -624,6 +848,7 @@ public class ProcessServlet extends HttpServlet {
 			Map<String,RequestPojo>map=null;
 
 			String referenceId=request.getParameter("referenceid");
+
 			String status="Rejected";
 			try {
 				map=adminOperation.getRequestDetails();
@@ -641,6 +866,8 @@ public class ProcessServlet extends HttpServlet {
 			break;
 
 		}
+		
+		
 		case"ToCreateCustomer":{
 
 			forwardRequest(request,response,URLEnum.CREATECUSTOMER.getURL());
@@ -963,6 +1190,50 @@ public class ProcessServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			break;
+		}
+		
+		case "acceptinhome":{
+			Map<String,RequestPojo>map=null;
+
+			String referenceId=request.getParameter("referenceid");
+			String status="Accepted";
+			try {
+				map=adminOperation.getRequestDetails();
+				adminOperation.processRequest(0,referenceId, status);
+				request.setAttribute("message", "Accepted requests");
+				map=adminOperation.getRequestDetails();
+				request.setAttribute("pendingrequestmap", map);
+				forwardRequest(request, response, URLEnum.ADMIN.getURL());
+
+				break;
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+
+		}
+
+		case "rejectinhome":{
+			Map<String,RequestPojo>map=null;
+
+			String referenceId=request.getParameter("ADMIN");
+			String status="Rejected";
+			try {
+				map=adminOperation.getRequestDetails();
+				adminOperation.processRequest(0,referenceId, status);
+				request.setAttribute("message", "Rejected requests");
+				map=adminOperation.getRequestDetails();
+				request.setAttribute("pendingrequestmap", map);
+				forwardRequest(request, response, URLEnum.PENDINGWITHDRAWREQUESTS.getURL());
+
+				break;
+			} catch (CustomException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+
 		}
 
 		}

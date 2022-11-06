@@ -16,9 +16,18 @@
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		<label>User id </label> <input type="number" min=7001
-			name="customerid" required placeholder="Enter Customer Id"> <br> <label>Account
-			number </label> <input type="number" min=60000000 name="accountnumber" placeholder="Enter Account number">
-		<br>
+			name="customerid"  placeholder="Enter Customer Id" value="<%=request.getAttribute("searchid")%>"> <br> 
+			
+			<button name="action" value="displayaccounttransaction">Specific account</button>
+			
+			<label>Account Number</label><select name="Accounts" id="Accounts">
+			<option value="" hidden="hidden">Select account</option>
+			<c:forEach var="element" items="${accountlist}">
+			<option value="${element}">${element}</option>
+			</c:forEach>
+			</select><br>
+			
+		
 		<button name="action" value="searchtransaction">Search</button>
 
 	</form>

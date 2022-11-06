@@ -30,7 +30,7 @@ public class PersistentLayer implements PersistentLayerPathway{
 			Connection connection=DriverManager.getConnection(url, user, password);
 			return connection;
 		}catch(SQLException e) {
-			throw new CustomException("Exception occured while connection");
+			throw new CustomException("Exception occured while connection",e);
 		}
 	}
 	//	LOGIN POJO
@@ -679,4 +679,48 @@ public class PersistentLayer implements PersistentLayerPathway{
 			throw new CustomException("Error occured while setting prepared statement",e);
 		}
 	}
+	@Override
+	public void updateProfile(UserPojo pojo) throws CustomException {
+		if(pojo.getDob()!=null) {
+			String query="UPDATE USER_DETAILS SET DOB=? where ID=?";
+			try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+				prepStatement.setString(1, pojo.getDob());
+				prepStatement.setLong(2, pojo.getId());
+				prepStatement.execute();
+			} catch (SQLException e) {
+				throw new CustomException("Error occured while setting prepared statement",e);
+			}	
+		}
+		else if(pojo.getMobile()!=null) {
+			String query="UPDATE USER_DETAILS SET MOBILE=? where ID=?";
+			try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+				prepStatement.setString(1, pojo.getMobile());
+				prepStatement.setLong(2, pojo.getId());
+				prepStatement.execute();
+			} catch (SQLException e) {
+				throw new CustomException("Error occured while setting prepared statement",e);
+			}	
+		}
+		else if(pojo.getEmail()!=null) {
+			String query="UPDATE USER_DETAILS SET EMAIL=? where ID=?";
+			try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+				prepStatement.setString(1, pojo.getEmail());
+				prepStatement.setLong(2, pojo.getId());
+				prepStatement.execute();
+			} catch (SQLException e) {
+				throw new CustomException("Error occured while setting prepared statement",e);
+			}	
+		}
+		else if(pojo.getAddress()!=null) {
+			String query="UPDATE USER_DETAILS SET ADDRESS=? where ID=?";
+			try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+				prepStatement.setString(1, pojo.getAddress());
+				prepStatement.setLong(2, pojo.getId());
+				prepStatement.execute();
+			} catch (SQLException e) {
+				throw new CustomException("Error occured while setting prepared statement",e);
+			}	
+		}
+	}
+	
 }
