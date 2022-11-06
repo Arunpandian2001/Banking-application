@@ -315,4 +315,18 @@ public class CustomerOperations extends User{
 			load.updateProfile(userPojo);
 		}
 	}
+
+	public void changePassword(long userId, String oldPassword,String newPassword, String reEnteredPassword) throws CustomException {
+		UserPojo pojo=Storage.VALUES.getUserDetails().get(userId);
+		if(pojo.getPassword().matches(oldPassword)) {
+			if(newPassword.matches(reEnteredPassword)) {
+				pojo.setPassword(reEnteredPassword);
+				load.updatePassword(pojo);
+			}else {
+				throw new CustomException("The re entered password mismatches");
+			}
+		}else {
+			throw new CustomException("The entered old password is incorrect");
+		}
+	}
 }

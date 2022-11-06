@@ -7,6 +7,7 @@
 <body>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ page import="java.util.Map" import="pojo.CustomerPojo"%>
+${message}
 
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
@@ -45,7 +46,6 @@
 	</c:forEach>
 
 	</table>
-${message}
 
 </body>
 

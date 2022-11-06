@@ -722,5 +722,16 @@ public class PersistentLayer implements PersistentLayerPathway{
 			}	
 		}
 	}
+	@Override
+	public void updatePassword(UserPojo pojo) throws CustomException {
+		String query="UPDATE USER_DETAILS SET PASSWORD=? WHERE ID=?";
+		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
+			prepStatement.setString(1, pojo.getPassword());
+			prepStatement.setLong(2, pojo.getId());
+			prepStatement.execute();
+		} catch (SQLException e) {
+			throw new CustomException("Error occured while setting prepared statement",e);
+		}
+	}
 	
 }

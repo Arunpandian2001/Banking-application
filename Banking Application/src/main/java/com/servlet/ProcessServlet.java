@@ -555,20 +555,37 @@ public class ProcessServlet extends HttpServlet {
 		}
 
 		case "searchuser":{
-			long searchId=Long.parseLong(request.getParameter("customerid"));
-			List<CustomerPojo> list=new ArrayList<>();
-			try {
-				list=adminOperation.getCustomerDetails(searchId);
-				request.setAttribute("customerdetails", list);
-				forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
+			if(!request.getParameter("customerid").isEmpty()) {
+				long searchId=Long.parseLong(request.getParameter("customerid"));
+				List<CustomerPojo> list=new ArrayList<>();
+				try {
+					list=adminOperation.getCustomerDetails(searchId);
+					request.setAttribute("customerdetails", list);
+					forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
 
-			} catch (CustomException e) {
-				// TODO Auto-generated catch block
-				request.setAttribute("message", e.getMessage());
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
+					e.printStackTrace();
+				}
+				break;
+			}else {
+				request.setAttribute("message","Please enter the Customer id");
+				List<CustomerPojo> list=new ArrayList<>();
+				try {
+					list=adminOperation.getCustomerDetails();
+					request.setAttribute("customerdetails", list);
+					forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
+
+				} catch (CustomException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				forwardRequest(request, response, URLEnum.USERINFORMATION.getURL());
-				e.printStackTrace();
+				
 			}
-			break;
+			
 		}
 
 		case "AccountInformation":{
@@ -1235,6 +1252,83 @@ public class ProcessServlet extends HttpServlet {
 			break;
 
 		}
+		case "ToChangePasswordCustomer":{
+			
+			forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
+			break;
+		}
+		case"ToChangePasswordAdmin":{
+			forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
+			break;
+		}
+		case "customerchangepassword":{
+			HttpSession session=request.getSession(false);
+			if(!request.getParameter("oldpassword").isEmpty()) {
+				if(!request.getParameter("newpassword").isEmpty()) {
+					if(!request.getParameter("reenterpassword").isEmpty()) {
+						long userId=(long) session.getAttribute("userid");
+						String oldPassword=request.getParameter("oldpassword");
+						String newPassword=request.getParameter("newpassword");
+						String reEnteredPassword=request.getParameter("reenterpassword");
+						try {
+							customerMethod.changePassword(userId,oldPassword,newPassword,reEnteredPassword);
+							request.setAttribute("message", "Password Changed Successfully");
+							forwardRequest(request,response,URLEnum.CUSTOMERLOGIN.getURL());
+
+						} catch (CustomException e) {
+							request.setAttribute("message", e.getCause());
+							forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
+						}
+						break;
+					}else {
+						request.setAttribute("message", "please re enter the new password");
+						forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
+					}
+				}else {
+					request.setAttribute("message", "please enter the  New password");
+					forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
+				}				
+			}else {
+				request.setAttribute("message", "please enter the  Old password");
+				forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
+			}
+			break;
+		}
+		
+		case "adminchangepassword":{
+			HttpSession session=request.getSession(false);
+			if(!request.getParameter("oldpassword").isEmpty()) {
+				if(!request.getParameter("newpassword").isEmpty()) {
+					if(!request.getParameter("reenterpassword").isEmpty()) {
+						long userId=(long) session.getAttribute("userid");
+						String oldPassword=request.getParameter("oldpassword");
+						String newPassword=request.getParameter("newpassword");
+						String reEnteredPassword=request.getParameter("reenterpassword");
+						try {
+							customerMethod.changePassword(userId,oldPassword,newPassword,reEnteredPassword);
+							request.setAttribute("message", "Password Changed Successfully");
+							forwardRequest(request,response,URLEnum.ADMINLOGIN.getURL());
+
+						} catch (CustomException e) {
+							request.setAttribute("message", e.getCause());
+							forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
+						}
+						break;
+					}else {
+						request.setAttribute("message", "please re enter the new password");
+						forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
+					}
+				}else {
+					request.setAttribute("message", "please enter the  New password");
+					forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
+				}				
+			}else {
+				request.setAttribute("message", "please enter the  Old password");
+				forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
+			}
+			break;
+		}
+
 
 		}
 	}

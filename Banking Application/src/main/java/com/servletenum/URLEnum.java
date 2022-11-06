@@ -18,6 +18,8 @@ public enum URLEnum {
 	TRANSACTIONDETAILS("JSP/Transaction.jsp"),
 	CUSTOMERTRANSACTIONREQUESTS("JSP/CustomerTransactionRequest.jsp"),
 	CREATECUSTOMER("JSP/CreateCustomer.jsp"),
+	TOCHANGEPASSWORDCUSTOMER("JSP/CustomerChangePassword.jsp"),
+	TOCHANGEPASSWORDADMIN("JSP/AdminChangePassword.jsp"),
 	TOACTIVITYREQUEST("JSP/ActivityRequestPage.jsp"),
 	TOPROCESSACCOUNTACTIVATION("JSP/AdminActivityRequest.jsp"),
 	CREATEACCOUNT("JSP/CreateAccount.jsp"),

@@ -18,6 +18,7 @@
 		<button name="action" value=ToTransactionDetails>Transaction details</button>&emsp;
 		<button name="action" value=CustomerTransactionRequests>Pending Transaction Requests</button>&emsp;
 		<button name="action" value=ToCustomerAccountRequests>Account activation Request</button>&emsp;
+		<button name="action" value=ToChangePasswordCustomer>Change Password</button>&emsp;
 	
 	</form>
 	

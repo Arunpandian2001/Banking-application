@@ -36,6 +36,10 @@
 		
 		<button name="action" value=ToProcessAccountActivation>Account activation</button>
 		&emsp;
+		
+		<button name="action" value=ToChangePasswordAdmin>Change password</button>
+		&emsp;
+		
 	</form>
 
 	<form action="<%=request.getContextPath()%>/ProcessServlet" method="get" target=_parent>
