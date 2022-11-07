@@ -109,7 +109,7 @@ public class ProcessServlet extends HttpServlet {
 		String action=request.getParameter("action");
 		switch(action) {
 		case "logout":{
-			response.sendRedirect(URLEnum.LOGOUT.getURL());
+			response.sendRedirect(URLEnum.LOGOUT.getURL());//
 			break;
 		}
 		case "Login":{
@@ -165,24 +165,8 @@ public class ProcessServlet extends HttpServlet {
 		}
 		case "save":{
 			customerPojo=getCurrentCustomerDetails(request);
-			if(!request.getParameter("dob").equals(customerPojo.getDob())) {
-				String dob=request.getParameter("dob");
-				customerPojo.setDob(dob);
-				CustomerPojo pojo=new CustomerPojo();
-				pojo.setDob(dob);
-				pojo.setId(customerPojo.getId());
-				try {
-					customerMethod.updateProfile(pojo);
-				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				request.setAttribute("userDetails",customerPojo);
-				request.setAttribute("message", "Changes saved");
-				forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
-				break;
-			}
-			else if(!request.getParameter("email").equals(customerPojo.getEmail())) {
+			
+			 if(!request.getParameter("email").equals(customerPojo.getEmail())) {
 				String email=request.getParameter("email");
 				customerPojo.setEmail(email);
 				CustomerPojo pojo=new CustomerPojo();
@@ -229,8 +213,8 @@ public class ProcessServlet extends HttpServlet {
 				try {
 					customerMethod.updateProfile(pojo);
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.CUSTOMERPROFILE.getURL());
 				}
 				request.setAttribute("userDetails",customerPojo);
 				request.setAttribute("message", "Changes saved");
@@ -242,25 +226,7 @@ public class ProcessServlet extends HttpServlet {
 		
 		case "admin_save":{
 			adminPojo=getCurrentUserDetails(request);
-			if(!request.getParameter("dob").equals(adminPojo.getDob())) {
-				String dob=request.getParameter("dob");
-				adminPojo.setDob(dob);
-				CustomerPojo pojo=new CustomerPojo();
-				pojo.setDob(dob);
-				pojo.setId(adminPojo.getId());
-
-				try {
-					adminOperation.updateProfile(pojo);
-				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				request.setAttribute("userDetails",adminPojo);
-				request.setAttribute("message", "Changes saved");
-				forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
-				break;
-			}
-			else if(!request.getParameter("email").equals(adminPojo.getEmail())) {
+			 if(!request.getParameter("email").equals(adminPojo.getEmail())) {
 				String email=request.getParameter("email");
 				adminPojo.setEmail(email);
 				CustomerPojo pojo=new CustomerPojo();
@@ -288,8 +254,8 @@ public class ProcessServlet extends HttpServlet {
 				try {
 					adminOperation.updateProfile(pojo);
 				} catch (CustomException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					request.setAttribute("message", e.getMessage());
+					forwardRequest(request, response, URLEnum.ADMINPROFILE.getURL());
 				}
 				request.setAttribute("userDetails",adminPojo);
 				request.setAttribute("message", "Changes saved");

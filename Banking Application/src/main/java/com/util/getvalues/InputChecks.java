@@ -43,4 +43,12 @@ public class InputChecks {
 		}
 		return false;
 	}
+	
+	public boolean checkAddress(String address) throws CustomException {
+		if(Pattern.matches("^[a-zA-Z ]*$", address)) {
+			return true;
+		}else {
+			throw new CustomException("The entered address is invalid");
+		}
+	}
 }

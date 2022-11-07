@@ -331,7 +331,9 @@ public class AdminOperations {
 			}
 		}
 		else if(userPojo.getAddress()!=null) {
-			load.updateProfile(userPojo);
+			if(inputCheck.checkAddress(userPojo.getAddress())) {
+				load.updateProfile(userPojo);
+			}
 		}
 	}
 }
