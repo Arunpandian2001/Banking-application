@@ -5,11 +5,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer Account</title>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Customer.css">
+
 </head>
 <body>
-
+<h1 style="text-align:center;justify-content:center;">ACCOUNT DETAILS</h1>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
-<table>
+<table class="centertable">
 <tr>
 <th>Account number</th>
 <th>Account type</th>

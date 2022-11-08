@@ -19,7 +19,7 @@ table td{
 	    background-image: url(../Images/jane_doe.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-    height: 871px;/*932*/
+    height: 97vh;/*932*//*871*/
     width: 100%;
     overflow: hidden;
 }
@@ -50,11 +50,11 @@ body{
 	border:none;
 	color:white;
 	border-radius:50px;
-	padding:15px 32px;
+	padding:15px 15px;
 	text-align:center;
 	text-decoration:none;
 	display:inline-block;
-	font-size:16px;
+	font-size:10px;
 	cursor:pointer;
 	font-weight:bold;
 	font-size:30px;
@@ -69,15 +69,13 @@ body{
   transform: translateY(4px);
 }
 .input{
-	border-color:black;
+	border:none;
 	padding:10px;
+	border-radius:20px;
+	color:black;
+	border-bottom:5px solid darkgray;
 }
-#mastercard{
-	margin-top: -120%;
-    width: 250px;
-    height: 200px;
-    margin-left: 58%;
-}
+
 #loginmessage{
 	margin-top: -5%;
     margin-left: 38%;
@@ -85,16 +83,9 @@ body{
     color: green;
 }
 #loginerrormessage{
-	margin-top: -5%;
+	margin-top:-25px;
     margin-left: 38%;
     font-size: x-large;
     color: red;
-}
-#mastercardfont{
-	color: white;
-    font-weight: bold;
-    margin-top: -7%;
-    font-size: xxx-large;
-    margin-left: 60%;
-    font-family: sans-serif;
+    
 }

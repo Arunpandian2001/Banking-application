@@ -126,6 +126,7 @@ public class ProcessServlet extends HttpServlet {
 						if(login.isActive(userId)) {
 							customerPojo=getCurrentCustomerDetails(request);
 							session.setAttribute("name",customerPojo.getName());
+
 							forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
 							break;
 
@@ -139,6 +140,7 @@ public class ProcessServlet extends HttpServlet {
 					else {
 						adminPojo=getCurrentUserDetails(request);
 						session.setAttribute("name", adminPojo.getName());
+						request.setAttribute("hidetable", "hide");
 						forwardRequest(request, response, URLEnum.ADMINLOGIN.getURL());
 						break;
 
@@ -298,11 +300,13 @@ public class ProcessServlet extends HttpServlet {
 				map=adminOperation.getRequestDetails();
 				if(map.isEmpty()) {
 					request.setAttribute("message", "No requests pending");
+					request.setAttribute("hidetable", "hide");
 					forwardRequest(request, response, URLEnum.ADMIN.getURL());
 					break;
 				}
 				else {
 					request.setAttribute("pendingrequestmap", map);
+
 					forwardRequest(request, response, URLEnum.ADMIN.getURL());
 					break;
 				}
@@ -556,6 +560,8 @@ public class ProcessServlet extends HttpServlet {
 
 		case "AccountInformation":{
 			request.setAttribute("searchid", "");
+			request.setAttribute("hidetable", "hide");
+
 			forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 
 			break;
@@ -571,6 +577,7 @@ public class ProcessServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			request.setAttribute("searchid", searchId);
+			request.setAttribute("hidetable", "hide");
 			request.setAttribute("accountlist", list);
 			forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 
@@ -587,6 +594,7 @@ public class ProcessServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			request.setAttribute("accountlist", list);
+			request.setAttribute("hidetable", "hide");
 			request.setAttribute("searchid",searchId);
 			forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 
@@ -602,6 +610,7 @@ public class ProcessServlet extends HttpServlet {
 					map=adminOperation.getAccountDetails(searchId);
 					List<Accounts_pojo> list=map.get(searchId);
 					request.setAttribute("accountdetails", list);
+
 					forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 					
 				} catch (CustomException e) {
@@ -634,6 +643,8 @@ public class ProcessServlet extends HttpServlet {
 
 		case"AdminTransaction":{
 			request.setAttribute("searchid", "");
+			request.setAttribute("hidetable", "hide");
+
 			forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 			break;
 		}

@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+.profilebutton {
+	border: none;
+	color: white;
+	font-weight: large;
+	font-size: 15px;
+	padding: 20px;
+	background: none;
+	cursor: pointer;
+	border-radius: 10px;
+	background-color: green;
+	width: 5%;
+}
+
+.centertable {
+	margin-left: 20%;
+	margin-right: auto;
+	margin-top: 132px;
+	padding: 0.5em;
+	height: 60vh;
+	width: 60%;
+	font-size: x-large;
+	font-family: sans-serif;
+	border: 2px solid black;
+	color:green;
+	background-color:#DCDCDC;
+}
+
+.centertable td {
+	border: 2px solid black;
+}
+.centertable input {
+	font-size:x-large;
+}
+
+.centertable th {
+	text-align: left;
+	border: 2px solid black;
+}
+.searchbar{
+	
+}

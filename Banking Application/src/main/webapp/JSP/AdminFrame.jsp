@@ -3,52 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin</title>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Menu.css">
+
 </head>
 <body>
 <!-- <iframe src="JSP/AdminOption.jsp" height="900px"></iframe>    <!-- jsp include tag -->
-
-<div >
+<header>
+<div class=container>
+<div class="menu-1"><img  src="<%=request.getContextPath()%>/Images/web.png" width="120%" height="120%"></div>
+<div class="menu-2"><nav>
 <form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="get" target=adminFrame ">
-		<button name="action" value=admin>Home</button>
-		&emsp;
-		
-		<button name="action" value=AdminProfile>Profile</button>
-		&emsp;
-		
-		<button name="action" value=UserInformation>User
-			Details</button>
-		&emsp;
-		<button name="action" value=AccountInformation>Account
-			details</button>
-		&emsp;
-		<button name="action" value=AdminTransaction>Transaction
-			details</button>
-		&emsp;
-		<button name="action" value=PendingWithdrawRequests>Approve Withdraw requests</button>
-		&emsp;
-		
-		<button name="action" value=ToCreateCustomer>Create customer</button>
-		&emsp;
-		
-		<button name="action" value=ToCreateAccount>Create Account</button>
-		&emsp;
-		
-		<button name="action" value=ToProcessAccountActivation>Account activation</button>
-		&emsp;
-		
-		<button name="action" value=ToChangePasswordAdmin>Change password</button>
-		&emsp;
-		
+		<ul class="menu">
+		<li><button class="menubutton" name="action" value=admin>Home</button></li>
+		<li><button class="menubutton" name="action" value=AdminProfile>Profile</button></li>
+		<li><button class="menubutton" name="action" value=UserInformation>User
+			Details</button></li>
+		<li><button class="menubutton" name="action" value=AccountInformation>Account
+			details</button></li>
+		<li></li>
+		<li><button class="menubutton" name="action" value=AdminTransaction>Transaction
+			details</button></li>
+		<li><button class="menubutton" name="action" value=PendingWithdrawRequests>Approve Withdraw requests</button></li>
+		<li><button class="menubutton" name="action" value=ToCreateCustomer>Create customer</button></li>
+		<li><button class="menubutton" name="action" value=ToCreateAccount>Create Account</button></li>
+		<li><button class="menubutton" name="action" value=ToProcessAccountActivation>Account activation</button></li>
+		<li><button class="menubutton" name="action" value=ToChangePasswordAdmin>Change password</button></li>
+		</ul>
 	</form>
-
-	<form action="<%=request.getContextPath()%>/ProcessServlet" method="get" target=_parent>
-		<button name="action" value=logout >Logout</button>
-		&emsp;
-
+</nav>
+</div>
+<div class="menu-3">
+<form action="<%=request.getContextPath()%>/ProcessServlet" method="get" target=_parent>
+	<ul>
+	<li><button class="logoutbutton" name="action" value=logout >Logout</button></li>
+	</ul>
 	</form>
 </div>
+</div>
+</header>
 
-<iframe src="JSP/Admin.jsp" name="adminFrame" height="907px" width=100%></iframe>
+<iframe src="JSP/Admin.jsp" name="adminFrame" height="765px"
+		width="99%"></iframe>
 </body>
-</html>
+</html>	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	

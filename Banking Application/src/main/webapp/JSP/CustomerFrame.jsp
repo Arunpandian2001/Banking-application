@@ -3,50 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer</title>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Menu.css">
 </head>
-<body>
-
-
-	<div id="options">
-		<form action="<%=request.getContextPath()%>/ProcessServlet"
+<body style=overflow:hidden>
+<header>
+<div class="container">
+<div class="menu-1">
+<img  src="<%=request.getContextPath()%>/Images/web.png" width="120%" height="120%">
+</div>
+<div class="menu-2">
+<nav> <form action="<%=request.getContextPath()%>/ProcessServlet"
 			method="get" target=customerFrame>
-			<ul>
-				<li><div class="menu"><button name="action" value=customer>Home</button></div></li>
-				<li><div class="menu"><button name="action" value=CustomerProfile>Profile</button></div></li>
-				<li><div class="menu"><button name="action" value=CustomerAccounts>Account
-						Details</button></div></li>
-					<li><button name="action" value=ToDeposit>Deposit</button><div class=menu></div></li>
+			<ul class="menu">
+				<li><button class="menubutton" name="action" value=customer>Home</button></li>
+				<li><button class="menubutton" name="action" value=CustomerProfile>Profile</button></li>
+				<li><button class="menubutton" name="action" value=CustomerAccounts>Account
+						Details</button></li>
+					<li><button class="menubutton" name="action" value=ToDeposit>Deposit</button></li>
 				
-					<li>	<div class=menu><button name="action" value=ToWithdraw>Withdraw</button></div></li>
+					<li>	<button class="menubutton" name="action" value=ToWithdraw>Withdraw</button></li>
 				
-					<li>	<div class=menu><button name="action" value=ToTransfer>Transfer</button></div></li>
+					<li>	<button class="menubutton" name="action" value=ToTransfer>Transfer</button></li>
 				
-					<li>	<div class=menu><button name="action" value=ToTransactionDetails>Transaction
-						details</button></div></li>
+					<li>	<button class="menubutton" name="action" value=ToTransactionDetails>Transaction
+						details</button></li>
 				
-					<li>	<div class=menu><button name="action" value=CustomerTransactionRequests>Pending
-						Transaction Requests</button></div></li>
-						<li><div class=menu><button name="action" value=ToCustomerAccountRequests>Account activation Request</button></div>
+					<li>	<button class="menubutton" name="action" value=CustomerTransactionRequests>Pending
+						Transaction Requests</button></li>
+						<li><button class="menubutton" name="action" value=ToCustomerAccountRequests>Account activation Request</button>
 					<li>
-					<div class=menu><button name="action" value=ToChangePasswordCustomer>Change
-						Password</button></div></li>
+					<button class="menubutton" name="action" value=ToChangePasswordCustomer>Change
+						Password</button></li>
 				
 			</ul>
-	</form>
-
-	
-	<div>
-	<form action="<%=request.getContextPath()%>/ProcessServlet"
+	</form> </nav>
+</div>
+<div class="menu-3">
+<form action="<%=request.getContextPath()%>/ProcessServlet"
 				method="get" target="_parent">
 				<ul>
-			<li><button name="action" value=logout>Logout</button>
+			<li><button class="logoutbutton" name="action" value=logout>Logout</button>
 	
 				</ul>
 	</form>
-	</div>
+</div>
 	 </div>
-	 <iframe src="JSP/Customer.jsp" name="customerFrame" height="900px"
-		width="100%"></iframe>
+</header>
+
+	
+	 <iframe src="JSP/Customer.jsp" name="customerFrame" height="765px"
+		width="99%"></iframe>
 	 
 
 

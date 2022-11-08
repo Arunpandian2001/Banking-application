@@ -5,6 +5,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Transaction requests</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Admin.css">
+	<style type="text/css"> 
+	.hide{
+	visiblity:hidden;
+		display:none;
+	
+	}
+	</style>
 </head>
 <body>
 
@@ -31,7 +41,7 @@
 		<button name="action" value="searchtransaction">Search</button>
 
 	</form>
-	<table>
+	<table class="transactiontable ${hidetable}">
 		<tr>
 			<th>REFERENCE_ID</th>
 			<th>CUSTOMER_ID</th>

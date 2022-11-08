@@ -3,19 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Welcome</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Admin.css">
+	<style type="text/css"> 
+	.hide{
+	visiblity:hidden;
+	display:none;
+	}
+	</style>
 </head>
 <body>
 
 <%
 	String name=(String)session.getAttribute("name");
 %>
-	<h1>Welcome <%= name %></h1>
+	<h1 style="justify:center;text-align:center">Welcome <%= name %></h1>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 	<%@ page import="pojo.RequestPojo"%>
-<table>
+<table class="centertable ${hidetable}">
 		<tr>
 			<th>CUSTOMER_ID</th>
 			<th>ACCOUNT_NUMBER</th>
@@ -23,9 +32,8 @@
 			<th>AMOUNT</th>
 			<th>REQUESTED TIME</th>
 			<th>STATUS</th>
-
-
-
+			<th>ACTIONS</th>
+			
 		</tr>
 
 
@@ -51,8 +59,8 @@
 					</td>
 					
 					<td>${element.value.getStatus()}</td>
-					<td><button name="action" value="acceptinhome">Accept</button></td>
-					<td><button name="action" value="rejectinhome">Reject</button></td>
+					<td><button name="action" class="acceptbutton" value="acceptinhome">Accept</button>
+					<button name="action" class="rejectbutton" value="rejectinhome">Reject</button></td>
 
 
 				</tr>

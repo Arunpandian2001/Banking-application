@@ -35,8 +35,7 @@
 
  </div> 
 	
-<img id="mastercard" alt="web" src="<%=request.getContextPath()%>/Images/mc_symbol.svg">
-<p id="mastercardfont">AP card</p>
+
 <h4 id="loginmessage">${message}</h4>
 	<h4 id="loginerrormessage">${wrongPassword}</h4>
 </body>
