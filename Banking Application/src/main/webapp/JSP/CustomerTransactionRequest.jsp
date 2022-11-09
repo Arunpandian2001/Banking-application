@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Pending Requests</title>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Customer.css">
+
 </head>
 <body>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-<%@  page import="java.util.Map" %>
-	${message}
+	<h1 style="text-align:center;justify-content:center;">PENDING TRANSACTIONS</h1>
 
-	<table>
+<%@  page import="java.util.Map" %>
+<div id="message">${message}</div>
+	
+
+	<table class="centertable">
 
 		<tr>
 		<th>Account number</th>

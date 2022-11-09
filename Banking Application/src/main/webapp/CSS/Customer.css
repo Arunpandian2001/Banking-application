@@ -9,35 +9,259 @@
 	background: none;
 	cursor: pointer;
 	border-radius: 10px;
-	background-color: green;
+background-color: #73d216;
 	width: 5%;
 }
 
 .centertable {
 	margin-left: 20%;
 	margin-right: auto;
-	margin-top: 132px;
+	margin-top:3%; /*132px;*/
 	padding: 0.5em;
 	height: 60vh;
 	width: 60%;
 	font-size: x-large;
 	font-family: sans-serif;
 	border: 2px solid black;
-	color:green;
 	background-color:#DCDCDC;
+	text-align: center;
+	border-collapse:collapse;
+	
 }
 
 .centertable td {
+	color:black;
 	border: 2px solid black;
 }
 .centertable input {
 	font-size:x-large;
 }
-
+.centertable tr:nth-child(even){
+	
+	background-color:white;
+	color:green;
+}
 .centertable th {
-	text-align: left;
+	border: 2px solid black;
+	color:black;
+}
+
+.transactionbutton{
+    border: none;
+    width: 113px;
+    height: 34px;
+    cursor: pointer;
+    background-color: #73d216;
+    color: black;
+    border-radius: 17px;
+    margin-left: 41%;
+}
+/*.transactionbutton:hover{
+	background-color:white;
+	color:green;
+}*/
+.transactionbutton:active{
+		background-color:white;
+		color:green;
+	 box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+.deposit{
+	margin-top: 7%;
+    margin-left: 25%;
+    margin-right: 11%;
+    padding: 4px;
+    width: 47%;
+    height: 30vh;
+	background-color:#DCDCDC;
+}
+
+
+.deposittable input{
+	border: none;
+    width: 42%;
+    font-size: inherit;
+    border-radius: 10px;
+    height: 44%;
+ }
+
+.deposittable select{
+	font-size: large;
+    border: none;
+    width: 61%;
+}
+.deposittable{
+	margin-left: 22%;
+    height: 22vh;
+    width: 78%;
+    font-size: large;
+}
+.deposit:hover{
+box-shadow: 10px 10px 42px 3px rgba(0,0,0,0.75);
+}
+.transaction {
+	margin-top: 2%;
+    margin-left: 38%;
+    width: 30%;
+    height: 7vh;
+    font-size: x-large;
+}
+.transaction select{
+	width: 51%;
+    height: 4.5vh;
+    font-size: initial;
+    margin-top: 9%;
+}
+.transaction button{
+	border: none;
+    width: 113px;
+    height: 34px;
+    cursor: pointer;
+    background-color: #73d216;
+    color: black;
+    border-radius: 17px;
+    margin-left: 41%;
+}
+
+.transaction button:active{
+	background-color:green;
+	color:white;
+	 box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+.transactiontable {
+	border-collapse:collapse;
+	margin-left: 10%;
+    margin-right: auto;
+    margin-top: 82px;
+    height: 60vh;
+    width: -15%;
+    font-size: medium;
+    font-family: sans-serif;
+    border: 2px solid black;
+    background-color: #DCDCDC;
+    text-align: center;
+	
+}
+.transactiontable thead{
+	background-color:white;
+}
+.transactiontable tbody td {
+	color:black;
 	border: 2px solid black;
 }
-.searchbar{
-	
+.transactiontable tbody input {
+	font-size:x-large;
+}
+
+.transactiontable thead th {
+	border: 2px solid black;
+	color:black;
+	padding:10px;
+	margin-top:12%;
+}
+#errormessage{
+	margin-top: 4%;
+    color: red;
+    justify-content: center;
+    text-align: center;
+    font-size: xx-large;
+}
+#message{
+	margin-top: 4%;
+    color: green;
+    justify-content: center;
+    text-align: center;
+    font-size: xx-large;
+}
+#transfer{
+	margin-top: 13%;
+    margin-left: 24%;
+    width: 45%;
+    background-color:#DCDCDC    
+}
+#transfer:hover{
+box-shadow: 10px 10px 42px 3px rgba(0,0,0,0.75);
+}
+#transfer button{
+border: none;
+    width: 113px;
+    height: 40px;
+    cursor: pointer;
+    background-color: #73d216;
+    color: black;
+    border-radius: 17px;
+    margin-left: 45%;
+}
+#transfer button :active{
+	background-color:green;
+		color:white;
+	 box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+#transaction {
+	margin-top: 4%;
+    margin-left: 38%;
+    width: 30%;
+    height: 7vh;
+    font-size: x-large;
+}
+#transaction select{
+	width: 51%;
+    height: 4.5vh;
+    font-size: initial;
+    margin-top: 9%;
+}
+#transaction button{
+	border: none;
+    width: 113px;
+    height: 34px;
+    cursor: pointer;
+    background-color: #73d216;
+    color: black;
+    border-radius: 17px;
+    
+}
+
+#transaction button:active{
+		background-color:green;
+		color:white;
+	 box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+#transaction input{
+	border: none;
+    width: 42%;
+    font-size: inherit;
+    border-radius: 10px;
+    height: 44%;
+}
+
+.centertable select{
+	width: 49%;
+    margin: 5px;
+    font-size: medium;
+    padding: 12px
+}
+#requesttable button{
+	margin-left: 45%;
+    margin-top: 2%;
+    border: none;
+    width: 113px;
+    height: 34px;
+    cursor: pointer;
+    background-color: #73d216;
+    color: black;
+    border-radius: 17px;
+}
+#passbutton{
+	margin-top: 5%;
+    margin-left: 45%;
+    border: none;
+    width: 7%;
+    height: 5vh;
+    font-size:large;
+    background-color: #73d216;
+    border-radius: 17px;
+    cursor:pointer;
 }

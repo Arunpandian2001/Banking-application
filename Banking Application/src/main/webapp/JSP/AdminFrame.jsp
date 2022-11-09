@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <title>Admin</title>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Menu.css">
-
+<body style=overflow:hidden>
 </head>
 <body>
-<!-- <iframe src="JSP/AdminOption.jsp" height="900px"></iframe>    <!-- jsp include tag -->
 <header>
 <div class=container>
 <div class="menu-1"><img  src="<%=request.getContextPath()%>/Images/web.png" width="120%" height="120%"></div>
 <div class="menu-2"><nav>
+<h1 STYLE="text-align:center;justify-content:center;color:green">AP INTERNATIONAL BANK</h1>
 <form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="get" target=adminFrame ">
 		<ul class="menu">
@@ -47,30 +47,3 @@
 		width="99%"></iframe>
 </body>
 </html>	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	

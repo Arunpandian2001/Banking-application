@@ -23,8 +23,8 @@
 	<tr><th>D.O.B</th><td><input type="date" name="dob" readonly value="<%=pojo.getDob()%>"></td></td></tr>
 	<tr><th>Mobile Number</th><td><input type="text"name="mobile" value="<%=pojo.getMobile()%>"></td></tr>
 	<tr><th>E-mail</th><td><input type="text" name="email" value="<%=pojo.getEmail()%>"></td></tr>
-	<tr><th>Aadhar Number</th><td>"<%=pojo.getAadhar()%>"</td></tr>
-	<tr><th>PAN Number</th><td>"<%=pojo.getPanNumber()%>"</td></tr>
+	<tr><th>Aadhar Number</th><td><%=pojo.getAadhar()%></td></tr>
+	<tr><th>PAN Number</th><td><%=pojo.getPanNumber()%></td></tr>
 	<tr><th>Address</th><td><input type="text" name="address" value="<%=pojo.getAddress()%>"></td></tr>
 	</table>
 	</form>	

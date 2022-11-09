@@ -126,7 +126,7 @@ public class ProcessServlet extends HttpServlet {
 						if(login.isActive(userId)) {
 							customerPojo=getCurrentCustomerDetails(request);
 							session.setAttribute("name",customerPojo.getName());
-
+							request.setAttribute("hidetable", "hide");
 							forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
 							break;
 
@@ -291,6 +291,7 @@ public class ProcessServlet extends HttpServlet {
 			long userId=(long)session.getAttribute("userid");
 			Map<Long,Accounts_pojo> map=Storage.VALUES.getuserSpecificAccounts(userId);
 			request.setAttribute("accountmap", map);
+
 			forwardRequest(request, response, URLEnum.CUSTOMER.getURL());
 			break;
 		}
@@ -458,6 +459,7 @@ public class ProcessServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			request.setAttribute("hidetable", "hide");
 			forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
 			break;
 		}
@@ -484,6 +486,7 @@ public class ProcessServlet extends HttpServlet {
 				}
 			}else {
 				request.setAttribute("message","Please select an account");
+				request.setAttribute("hidetable", "hide");
 				forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
 			}
 			break;
@@ -956,30 +959,31 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "submitrequest":{
-			long accountNumber=Long.parseLong(request.getParameter("Accounts"));
-			StringBuilder message=new StringBuilder();
-			message.append(request.getParameter("reqmessage"));
-			try {
-				customerMethod.accountActiveRequest(accountNumber,message);
-				request.setAttribute("message", "Request Submitted");
-				forwardRequest(request, response, URLEnum.TOACTIVITYREQUEST.getURL());			
-			}
-
-			catch(CustomException e) {
-				e.printStackTrace();
-				request.setAttribute("errormessage", "An Error Occured");
-				List<Long> list = null;
+			
+				String accountNumber=request.getParameter("Accounts");
+				StringBuilder message=new StringBuilder();
+				message.append(request.getParameter("reqmessage"));
 				try {
-					list = displayActivateRequestAccounts(request, response);
-				} catch (CustomException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					customerMethod.accountActiveRequest(accountNumber,message);
+					request.setAttribute("message", "Request Submitted");
+					forwardRequest(request, response, URLEnum.TOACTIVITYREQUEST.getURL());			
 				}
-				request.setAttribute("accountlist", list);
-				forwardRequest(request, response, URLEnum.TOACTIVITYREQUEST.getURL());				
-			}
-			break;
 
+				catch(CustomException e) {
+					e.printStackTrace();
+					request.setAttribute("errormessage", e.getMessage());
+					List<Long> list = null;
+					try {
+						list = displayActivateRequestAccounts(request, response);
+					} catch (CustomException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					request.setAttribute("accountlist", list);
+					forwardRequest(request, response, URLEnum.TOACTIVITYREQUEST.getURL());				
+				}
+				break;
+			
 		}
 
 
@@ -1250,10 +1254,10 @@ public class ProcessServlet extends HttpServlet {
 						try {
 							customerMethod.changePassword(userId,oldPassword,newPassword,reEnteredPassword);
 							request.setAttribute("message", "Password Changed Successfully");
-							forwardRequest(request,response,URLEnum.CUSTOMERLOGIN.getURL());
+							forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
 
 						} catch (CustomException e) {
-							request.setAttribute("message", e.getCause());
+							request.setAttribute("message", e.getMessage());
 							forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDCUSTOMER.getURL());
 						}
 						break;
@@ -1284,10 +1288,10 @@ public class ProcessServlet extends HttpServlet {
 						try {
 							customerMethod.changePassword(userId,oldPassword,newPassword,reEnteredPassword);
 							request.setAttribute("message", "Password Changed Successfully");
-							forwardRequest(request,response,URLEnum.ADMINLOGIN.getURL());
+							forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
 
 						} catch (CustomException e) {
-							request.setAttribute("message", e.getCause());
+							request.setAttribute("message", e.getMessage());
 							forwardRequest(request,response,URLEnum.TOCHANGEPASSWORDADMIN.getURL());
 						}
 						break;

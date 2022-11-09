@@ -23,12 +23,12 @@
 	font-size: large;
 	font-family: sans-serif;
 	border: 2px solid black;
-	color:green;
 	background-color:#DCDCDC;
 }
 
 .centertable td {
 	border: 2px solid black;
+	color:black;
 }
 .centertable input {
 	font-size:x-large;
@@ -37,6 +37,12 @@
 .centertable th {
 	text-align: left;
 	border: 2px solid black;
+	color:black;
+}
+.centertable tr:nth-child(even){
+	
+	background-color:white;
+	color:grren;
 }
 .acceptbutton{
 	color:black;
@@ -83,7 +89,7 @@
 }
 .transactiontable{
 	
-	margin-right: auto;
+	/*margin-right: auto;
 	margin-top: 132px;
 	padding: 1em;
 	height: 60vh;
@@ -92,7 +98,18 @@
 	font-family: sans-serif;
 	border: 2px solid black;
 	color:green;
-	background-color:#DCDCDC;
+	background-color:#DCDCDC;*/
+	margin-left: 10%;
+    margin-right: auto;
+    margin-top: 132px;
+    padding: -0.5em;
+    height: 60vh;
+    width: -15%;
+    font-size: medium;
+    font-family: sans-serif;
+    border: 2px solid black;
+    background-color: #DCDCDC;
+    text-align: center;
 }
 .transactiontable td {
 	border: 2px solid black;
@@ -107,5 +124,50 @@
 	border: 2px solid black;
 }
 .searchbar{
-	margin-top:500px;
+	margin-top: 0px;
+    margin-left: 684px;
+}
+.searchbar input{
+	width: 50%;
+    margin-left: 14px;
+    height: 38px;
+    padding: 5px;
+    margin-top: 100px;
+}
+.searchbar label{
+	margin-left: -200px;
+    font-size: 23px;
+}
+#searchbutton{
+	border: none;
+    width: 100px;
+    height: 52px;
+    cursor: pointer;
+    background-color: green;
+    color: white;
+}
+#searchbutton :hover{
+	background-color:white;
+	color:green;
+	width:50px;
+}
+#searchbutton:active{
+		background-color:green;
+		color:white;
+	 box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+#errormessage{
+	margin-top: 4%;
+    color: red;
+    justify-content: center;
+    text-align: center;
+    font-size: xx-large;
+}
+#message{
+	margin-top: 4%;
+    color: green;
+    justify-content: center;
+    text-align: center;
+    font-size: xx-large;
 }

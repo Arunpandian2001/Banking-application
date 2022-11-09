@@ -287,10 +287,13 @@ public class CustomerOperations extends User{
 		return false;		
 	}
 
-	public void accountActiveRequest(long accountNumber, StringBuilder message) throws CustomException {
+	public void accountActiveRequest(String accountNumber, StringBuilder message) throws CustomException {
+		if(accountNumber.isEmpty()) {
+			throw new CustomException("Please enter the account number");
+		}
 		long time=System.currentTimeMillis();
 		ActivityPojo pojo=new ActivityPojo();	
-		pojo.setAccountNumber(accountNumber);
+		pojo.setAccountNumber(Long.parseLong(accountNumber));
 		pojo.setMessage(message.toString());
 		pojo.setRequestedTime(time);
 		pojo.setStatus("PENDING");

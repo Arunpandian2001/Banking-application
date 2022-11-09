@@ -5,23 +5,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Customer.css">
+
 </head>
 <body>
 
-<h1>Change Password</h1>
-
-<form action="<%=request.getContextPath()%>/ProcessServlet" method="get" target="_parent">
+<h1 style="text-align:center;justify-content:center;">CHANGE PASSWORD</h1>
 
 
-<label>Old Password</label><input type="text" name="oldpassword" required><br>
-<label>New Password</label><input type="text" name="newpassword" required ><br>
-<label>Re-Enter Password</label><input type="text" name="reenterpassword" required><br>
+<form action="<%=request.getContextPath()%>/ProcessServlet" method="get" target="customerFrame">
+<table class="centertable">
+<tr><th>Old Password</th><td><input type="text" name="oldpassword" required></td></tr>
+<tr><th>New Password</th><td><input type="password" name="newpassword" required ></td></tr>
+<tr><th>Re-Enter Password</th><td><input type="password" name="reenterpassword" required></td></tr>
+</table>
 
-
-
-<button name="action" value="customerchangepassword">Submit</button>
+<button id="passbutton" name="action" value="customerchangepassword">Submit</button>
 
 </form>
-${message}
+<div id="message">${message}</div>
 </body>
 </html>

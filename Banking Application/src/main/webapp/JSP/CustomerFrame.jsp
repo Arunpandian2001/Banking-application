@@ -12,6 +12,8 @@
 <img  src="<%=request.getContextPath()%>/Images/web.png" width="120%" height="120%">
 </div>
 <div class="menu-2">
+<h1 STYLE="text-align:center;justify-content:center;color:green;">AP INTERNATIONAL BANK</h1>
+
 <nav> <form action="<%=request.getContextPath()%>/ProcessServlet"
 			method="get" target=customerFrame>
 			<ul class="menu">
