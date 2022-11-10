@@ -9,7 +9,7 @@
 
 </head>
 <body>
-<h1 style="text-align:center;justify-content:center;">ACCOUNT DETAILS</h1>
+<h1>ACCOUNT DETAILS</h1>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 <table class="centertable">
 <tr>

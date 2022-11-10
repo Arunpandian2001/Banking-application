@@ -15,7 +15,7 @@
 	
 	CustomerPojo pojo = (CustomerPojo) request.getAttribute("userDetails");
 	%>
-	<h1 style="text-align:center;justify-content:center;">PROFILE</h1>
+	<h1>PROFILE</h1>
 	
 	<table class="centertable">
 	<tr><th>Name</th><td><%=pojo.getName()%></td></tr>
@@ -28,7 +28,7 @@
 	<tr><th>Address</th><td><input type="text" name="address" value="<%=pojo.getAddress()%>"></td></tr>
 	</table>
 	</form>	
-	<button style="margin-left:920px;"class="profilebutton" value="save"  name="action" >Save</button>
+	<button class="profilebutton" value="save"  name="action" >Save</button>
 ${message}
 
 </body>

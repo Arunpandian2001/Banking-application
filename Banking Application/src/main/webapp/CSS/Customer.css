@@ -2,48 +2,65 @@
 
 .profilebutton {
 	border: none;
-	color: white;
-	font-weight: large;
-	font-size: 15px;
-	padding: 20px;
-	background: none;
-	cursor: pointer;
-	border-radius: 10px;
-background-color: #73d216;
-	width: 5%;
+    color: black;
+    font-weight: large;
+    font-size: 15px;
+    padding: 20px;
+    background: none;
+    cursor: pointer;
+    border-radius: 35px;
+    background-color: #ffffff;
+    width: 18%;
+    margin-left: 40%;
+    margin-top: 3%;
+    font-size: 22px;
 }
-
+.profilebutton:hover{
+	background-color:#4ec94e;
+	color:white;
+}
 .centertable {
 	margin-left: 20%;
-	margin-right: auto;
-	margin-top:3%; /*132px;*/
-	padding: 0.5em;
-	height: 60vh;
-	width: 60%;
-	font-size: x-large;
-	font-family: sans-serif;
-	border: 2px solid black;
-	background-color:#DCDCDC;
-	text-align: center;
-	border-collapse:collapse;
+    margin-right: auto;
+    margin-top: 11%;
+    padding: 0.5em;
+    height: 26vh;
+    width: 60%;
+    font-size: large;
+    font-family: sans-serif;
+    border: 0.5px solid black;
+    background-color:#c8f1c8;
+    text-align: left;
+    border-collapse: collapse;
 	
 }
 
-.centertable td {
-	color:black;
-	border: 2px solid black;
-}
+
 .centertable input {
 	font-size:x-large;
+	border:none;
+	outline:none;
+	background:none;
+	width:100%;
 }
 .centertable tr:nth-child(even){
 	
-	background-color:white;
+	background-color:#c7e3c3;
+	color:rgb(0, 0, 0);
+}
+.centertable tr:hover{
+	
+	background-color:#f1f1f1;
 	color:green;
 }
+
 .centertable th {
-	border: 2px solid black;
-	color:black;
+	border: 0.5px solid black;
+    color: #5e5b5b;
+    font-weight: 100;
+    background-color: #4ec94e;
+    font-size:x-large;
+    text-align:center;
 }
 
 .transactionbutton{
@@ -73,9 +90,7 @@ background-color: #73d216;
     padding: 4px;
     width: 47%;
     height: 30vh;
-	background-color:#DCDCDC;
 }
-
 
 .deposittable input{
 	border: none;
@@ -88,16 +103,37 @@ background-color: #73d216;
 .deposittable select{
 	font-size: large;
     border: none;
-    width: 61%;
+    width: 100%;
+    height: 100%;
+    background: none;
+    outline: none;    
+}
+.deposittable th{
+	font-size:24px;
+	color:#5e5b5b;
 }
 .deposittable{
-	margin-left: 22%;
-    height: 22vh;
-    width: 78%;
-    font-size: large;
+	margin-top: 9%;
+    margin-left: 22%;
+    height: 23vh;
+    width: 88%;
 }
-.deposit:hover{
-box-shadow: 10px 10px 42px 3px rgba(0,0,0,0.75);
+.deposittable input{
+	background: transparent;
+    outline: none;
+    border: none;
+    height: 100%;
+    width: 100%;
+}
+.deposittable td{
+	
+	background-color:#c7e3c3;
+	color:rgb(0, 0, 0);
+}
+.deposittable td:hover{
+	
+	background-color:green;
+	color:white;
 }
 .transaction {
 	margin-top: 2%;

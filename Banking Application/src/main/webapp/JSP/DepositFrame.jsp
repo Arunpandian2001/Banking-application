@@ -9,7 +9,7 @@
 <body>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-	<h1 style="text-align:center;justify-content:center;">DEPOSIT</h1>
+	<h1>DEPOSIT</h1>
 
 	<div class="deposit">
 
@@ -28,12 +28,13 @@
 				name="amount" min="1" required placeholder="Enter Amount"></td></tr>
 				
 			</table>
-			<button class="transactionbutton" name="action" value="deposit">Deposit</button>
 		
 		</form>
 		
-	<h1 style="text-align:center;justify-content:center;margin-left:-19%;">${message}</h1>
 
 	</div>
+				<button class="profilebutton" name="action" value="deposit">Deposit</button>
+		<h1 style="text-align:center;justify-content:center;margin-left:-19%;">${message}</h1>
+	
 </body>
 </html>
