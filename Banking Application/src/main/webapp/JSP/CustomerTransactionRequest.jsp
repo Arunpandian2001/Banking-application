@@ -10,7 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-	<h1 style="text-align:center;justify-content:center;">PENDING TRANSACTIONS</h1>
+	<h1>PENDING TRANSACTIONS</h1>
 
 <%@  page import="java.util.Map" %>
 <div id="message">${message}</div>

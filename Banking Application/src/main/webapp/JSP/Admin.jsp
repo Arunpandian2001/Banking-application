@@ -16,13 +16,14 @@
 <%
 	String name=(String)session.getAttribute("name");
 %>
-	<h1 style="justify:center;text-align:center">Welcome <%= name %></h1>
+	<h1>Welcome <%= name %></h1>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 	<%@ page import="pojo.RequestPojo"%>
 <table class="centertable ${hidetable}">
+<thead>
 		<tr>
 			<th>CUSTOMER_ID</th>
 			<th>ACCOUNT_NUMBER</th>
@@ -34,8 +35,8 @@
 			
 		</tr>
 
-
-
+</thead>
+<tbody>
 		<c:forEach var="element" items="${pendingrequestmap}">
 
 			<form action="<%=request.getContextPath()%>/ProcessServlet"
@@ -66,8 +67,9 @@
 			</form>
 
 		</c:forEach>
+		</tbody>
 	</table>
-	${message }
+	<div id="message">${message}</div>
 	
 </body>
 </html>

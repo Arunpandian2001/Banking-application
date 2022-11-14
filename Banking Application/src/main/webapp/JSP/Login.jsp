@@ -22,9 +22,9 @@
 		<tr><td></td><th id="header">Login</th></tr>
 		<tr>
 			<td>User Id </td> <td><input class="input" type="number" min=7000
-				name="userId" required placeholder="Enter user id"></td></tr>
+				name="userId" required ></td></tr>
 			<tr><td>Password</td> <td><input class="input" type="password" name="password"
-				required placeholder="Enter password"></td></tr>
+				required ></td></tr>
 				<tr><td></td><td><button class="button" type="submit" name=action value="Login">Login</button></td></tr>
 			</table>
 				

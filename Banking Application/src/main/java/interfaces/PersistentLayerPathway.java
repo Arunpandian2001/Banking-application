@@ -28,7 +28,7 @@ public interface PersistentLayerPathway {
 	
 	void updateSelfTransactionDetails(TransactionPojo pojo) throws CustomException; // combine with previous
 	
-	 Accounts_pojo getAccountPojoQuery(long accountNumber) throws CustomException;//swami
+	Map<Long,Accounts_pojo> getAllAccountsMap() throws CustomException;//swami
 
 	Map<Long, Map<String, TransactionPojo>> getTransactions(long customerId,Long ...accountNumber) throws CustomException;
 

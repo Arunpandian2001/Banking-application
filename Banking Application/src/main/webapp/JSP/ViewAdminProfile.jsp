@@ -14,8 +14,8 @@
 	<%
 	UserPojo pojo=(UserPojo)request.getAttribute("userDetails"); %>
 	
-	<h1 style="text-align:center;justify-content:center;">PROFILE</h1>
-	
+	<h1>PROFILE</h1>
+	<div id="message">${message}</div>
 	<table class="centertable">
 	<tr><th>Name</th><td><%=pojo.getName()%></td></tr>
 	<tr><th>User Id</th><td><%=pojo.getId()%></td></tr>
@@ -26,8 +26,8 @@
 	</table>
 	
 </form>
-<button style="margin-left:920px;" class="profilebutton" value="save"  name="action" >Save</button>
-	${message}
+<button class="profilebutton" value="save"  name="action" >Save</button>
+	
 	
 </body>
 </html>

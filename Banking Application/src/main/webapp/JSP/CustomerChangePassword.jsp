@@ -10,19 +10,20 @@
 </head>
 <body>
 
-<h1 style="text-align:center;justify-content:center;">CHANGE PASSWORD</h1>
+<h1>CHANGE PASSWORD</h1>
 
-
+<div class="deposit">
 <form action="<%=request.getContextPath()%>/ProcessServlet" method="get" target="customerFrame">
-<table class="centertable">
+<table class="deposittable">
 <tr><th>Old Password</th><td><input type="text" name="oldpassword" required></td></tr>
 <tr><th>New Password</th><td><input type="password" name="newpassword" required ></td></tr>
 <tr><th>Re-Enter Password</th><td><input type="password" name="reenterpassword" required></td></tr>
 </table>
 
-<button id="passbutton" name="action" value="customerchangepassword">Submit</button>
+<button class="profilebutton" name="action" value="customerchangepassword">Submit</button>
 
 </form>
+</div>
 <div id="message">${message}</div>
 </body>
 </html>

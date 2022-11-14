@@ -54,53 +54,51 @@ public class CustomerOperations extends User{
 		return accountsList;
 	}
 
-	@Override
-	public double balance() throws CustomException {
-		long userId=getUserId();
-		long accountNumber=getAccountNumber();
-		Map<Long,Accounts_pojo> map=Storage.VALUES.getuserSpecificAccounts(userId);
-		return map.get(accountNumber).getBalance();
+	public double balance(long userId,long accountNumber) throws CustomException {
+		return Storage.VALUES.getuserSpecificAccounts(userId).get(accountNumber).getBalance();
 	}
 
-	@Override
-	public void toDeposit( double amount) throws CustomException {
-		long userId=getUserId();
-		long accountNumber=getAccountNumber();
+	public void toDeposit(long userId,long accountNumber, double amount) throws CustomException {
+		Accounts_pojo currentUser=Storage.VALUES.getAccountList().get(accountNumber);
 		Map<Long, Map<Long, Accounts_pojo>> map=Storage.VALUES.getAccountDetails();
-	
+		double balance;
+
 		if(isSenderValid(userId,accountNumber,amount)) {
 			load.depositUpdate(amount,accountNumber);
-			map.get(userId).get(accountNumber).setBalance(load.getCurrentBalance(accountNumber));
-			updateDeposit(accountNumber,amount,getTime(),map.get(userId).get(accountNumber).getBalance());
+			balance=load.getCurrentBalance(accountNumber);
+			map.get(userId).get(accountNumber).setBalance(balance);
+			Storage.VALUES.getAccountList().get(accountNumber).setBalance(balance);
+			currentUser.setBalance(balance);
+			updateDeposit(amount,getTime(),currentUser);
 		}
 
 	}
-	@Override
-	public void toWithdraw(double amount) throws CustomException {
-		
-		long userId=getUserId();
-		long accountNumber=getAccountNumber();
+	public void toWithdraw(long userId,long accountNumber,double amount) throws CustomException {
+		Accounts_pojo currentUser=Storage.VALUES.getAccountList().get(accountNumber);
 		Map<Long, Map<Long, Accounts_pojo>> map=Storage.VALUES.getAccountDetails();
-	
+		double balance;
 		if(isSenderValid(userId,accountNumber,amount)) {
 			load.withdrawUpdate(amount,accountNumber);
-			map.get(userId).get(accountNumber).setBalance(load.getCurrentBalance(accountNumber));
-			updateWithdraw(accountNumber,amount,getTime(),map.get(userId).get(accountNumber).getBalance());
+			balance=load.getCurrentBalance(accountNumber);
+			map.get(userId).get(accountNumber).setBalance(balance);
+			Storage.VALUES.getAccountList().get(accountNumber).setBalance(balance);
+			currentUser.setBalance(balance);
+			updateWithdraw(amount,getTime(),currentUser);
 		}
 	}
 	
 
 
-	private void updateWithdraw(long userAccount, double amount, long time, double balance) throws CustomException {
+	private void updateWithdraw(double amount, long time,Accounts_pojo userPojo) throws CustomException {
 		TransactionPojo pojo = new TransactionPojo();	
 		String referenceId="AP"+time;
 		pojo.setAmount(amount);
 		pojo.setTransactionTypes("DEBIT");
 		pojo.setTimeInMillis(time);
-		pojo.setClosingBalance(balance);
+		pojo.setClosingBalance(userPojo.getBalance());
 		pojo.setMode("Withdraw");
-		pojo.setAccountNumber(userAccount);
-		pojo.setCustomerId(Storage.VALUES.getUserId());
+		pojo.setAccountNumber(userPojo.getAccountNumber());
+		pojo.setCustomerId(userPojo.getCustomerId());
 		pojo.setStatus("Request pending");
 		pojo.setReferenceId(referenceId);
 		load.updateSelfTransactionDetails(pojo);
@@ -118,16 +116,16 @@ public class CustomerOperations extends User{
 		Storage.VALUES.setBasicData();
 	}
 	
-	private void updateDeposit(long userAccount, double amount, long time, double balance) throws CustomException {
+	private void updateDeposit( double amount, long time,Accounts_pojo userPojo) throws CustomException {
 		TransactionPojo pojo = new TransactionPojo();
 		String referenceId="AP"+time;
 		pojo.setAmount(amount);
 		pojo.setMode("Deposit");
 		pojo.setTransactionTypes("CREDIT");
 		pojo.setTimeInMillis(time);
-		pojo.setClosingBalance(balance);
-		pojo.setAccountNumber(userAccount);
-		pojo.setCustomerId(Storage.VALUES.getUserId());
+		pojo.setClosingBalance(userPojo.getBalance());
+		pojo.setAccountNumber(userPojo.getAccountNumber());
+		pojo.setCustomerId(userPojo.getCustomerId());
 		pojo.setStatus("Success");
 		pojo.setReferenceId(referenceId);
 
@@ -136,25 +134,31 @@ public class CustomerOperations extends User{
 		Storage.VALUES.setBasicData();
 	}
 	
-	@Override
-	public void transferAmount(long receiverAccountNumber, double amount, String password) throws CustomException {
+	public void transferAmount(long currentUserAccountNumber,long receiverAccountNumber, double amount, String password) throws CustomException {
 		
-		long userId=getUserId();
-		long currentUserAccountNumber=getAccountNumber();
-		long receiverUserId=load.getAccountPojoQuery(receiverAccountNumber).getCustomerId();
+		Accounts_pojo currentUser=Storage.VALUES.getAccountList().get(currentUserAccountNumber);
+		Accounts_pojo receiverPojo=Storage.VALUES.getAccountList().get(receiverAccountNumber);
+		long receiverUserId=receiverPojo.getCustomerId();
+		long userId=receiverPojo.getCustomerId();
+		double balance;
 		Map<Long, Map<Long, Accounts_pojo>> map=Storage.VALUES.getAccountDetails();
 		
 		if((currentUserAccountNumber!=receiverAccountNumber)) {
-			if(isSenderValid(userId,currentUserAccountNumber,amount) && isReceiverValid(receiverUserId,receiverAccountNumber))  {
+			if(isSenderValid(userId,currentUserAccountNumber,amount) && isReceiverValid(receiverUserId,receiverAccountNumber)) {
 				if(password.equals(Storage.VALUES.getUserDetails().get(userId).getPassword()) ){
 
 					load.depositUpdate(amount,receiverAccountNumber);
-					map.get(receiverUserId).get(receiverAccountNumber).setBalance(load.getCurrentBalance(receiverAccountNumber));
+					balance=load.getCurrentBalance(receiverAccountNumber);
+					map.get(receiverUserId).get(receiverAccountNumber).setBalance(balance);
+					Storage.VALUES.getAccountList().get(receiverAccountNumber).setBalance(balance);
+					receiverPojo.setBalance(balance);
 
 					load.withdrawUpdate(amount,currentUserAccountNumber);
-					map.get(userId).get(currentUserAccountNumber).setBalance(load.getCurrentBalance(currentUserAccountNumber));
-
-					updateTransaction(currentUserAccountNumber,receiverAccountNumber,amount,getTime(),map.get(userId).get(currentUserAccountNumber).getBalance(),map.get(receiverUserId).get(receiverAccountNumber).getBalance(),receiverUserId);
+					balance=load.getCurrentBalance(currentUserAccountNumber);
+					map.get(userId).get(currentUserAccountNumber).setBalance(balance);
+					Storage.VALUES.getAccountList().get(currentUserAccountNumber).setBalance(balance);;
+					currentUser.setBalance(balance);
+					updateTransaction(amount,getTime(),receiverPojo,currentUser);
 				}else {
 					throw new CustomException("The password entered is invalid");
 				}
@@ -166,33 +170,33 @@ public class CustomerOperations extends User{
 		
 	}
 	
-	private void updateTransaction(long curentUser, long receiver, double amount, long time, double currentUserBalance, double receiverBalance,long receiverId) throws CustomException {
+	private void updateTransaction(double amount, long time,Accounts_pojo receiverPojo,Accounts_pojo userPojo) throws CustomException {
 		
 		String referenceId="AP"+time;
 
 		TransactionPojo pojo = new TransactionPojo();	
-		pojo.setSecondary(receiver);
+		pojo.setSecondary(receiverPojo.getAccountNumber());
 		pojo.setAmount(amount);
 		pojo.setTransactionTypes("DEBIT");
 		pojo.setMode("Transfer");
 		pojo.setTimeInMillis(time);
-		pojo.setClosingBalance(currentUserBalance);
-		pojo.setAccountNumber(curentUser);
-		pojo.setCustomerId(Storage.VALUES.getUserId());
+		pojo.setClosingBalance(userPojo.getBalance());
+		pojo.setAccountNumber(userPojo.getAccountNumber());
+		pojo.setCustomerId(userPojo.getCustomerId());
 		pojo.setReferenceId(referenceId);
 		pojo.setStatus("success");
 
 		load.updateTransactionDetails(pojo);
 		
 		TransactionPojo pojo1 = new TransactionPojo();	
-		pojo1.setSecondary(curentUser);
+		pojo1.setSecondary(userPojo.getCustomerId());
 		pojo1.setAmount(amount);
 		pojo1.setMode("Transfer");
 		pojo1.setTransactionTypes("CREDIT");
 		pojo1.setTimeInMillis(time);
-		pojo1.setClosingBalance(receiverBalance);
-		pojo1.setAccountNumber(receiver);
-		pojo1.setCustomerId(receiverId);    
+		pojo1.setClosingBalance(receiverPojo.getBalance());
+		pojo1.setAccountNumber(receiverPojo.getAccountNumber());
+		pojo1.setCustomerId(receiverPojo.getCustomerId());    
 		pojo1.setReferenceId(referenceId);
 		pojo1.setStatus("success");
 
@@ -201,16 +205,6 @@ public class CustomerOperations extends User{
 		Storage.VALUES.setBasicData();
 		
 	}
-	
-	
-	private long getUserId() {
-		return Storage.VALUES.getUserId();
-	}
-	
-	private long getAccountNumber() {
-		return Storage.VALUES.getAccountNumber();
-	}
-	
 	private boolean isSenderValid(long userId,long accountNumber,double amount) throws CustomException{
 
 		Accounts_pojo userAccountPojo=Storage.VALUES.getAccountDetails().get(userId).get(accountNumber);

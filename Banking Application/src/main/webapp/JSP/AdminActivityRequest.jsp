@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Admin.css">
+
 </head>
 <body>
 
@@ -12,23 +14,23 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 	<%@ page import="pojo.ActivityPojo"%>
+<h1>ACTIVATION REQUEST</h1>
 
-	${message}
-
-
+	<div class="request">
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		
 		<label>Request Id</label> <input type="number" min=1
-			name="requestid" placeholder="Enter Request Id"> <br>
-		<button value="adminaccountactive" name="action">Activate </button>		
+			name="requestid" placeholder="Enter Request Id">
+		<button id="activate" value="adminaccountactive" name="action">Activate </button>		
 			<!-- <button value="adminaccountinactive" name="action">DeActivate </button> -->			
-		<button value="adminaccountactiveall" name="action">Activate all</button>		
+		<button id="activateall" value="adminaccountactiveall" name="action">Activate all</button>		
 			<!-- <button value="adminaccountinactiveall" name="action">DeActivate all</button> -->			
 		
 	</form>
+	</div>
 
-	<table>
+	<table class="centertable">
 		<tr>
 		<th>REQUEST_ID</th>
 			<th>ACCOUNT_NUMBER</th>
@@ -36,6 +38,7 @@
 			<th>REQUESTED TIME</th>
 			<th>PROCESSED TIME</th>
 			<th>STATUS</th>
+			<th>ACTION</th>
 
 		</tr>
 
@@ -60,9 +63,10 @@
 							target="${processedday}" property="time"
 							value="${element.value.getProcessedTime()}"></c:set>
 		<fmt:formatDate value="${processedday}" pattern="dd-MM-yyyy hh:mm:ss "/>					
-					</c:if></td>
+					</c:if>
+					</td>
 					<td>${element.value.getStatus()}</td>
-					<td><button name="action" value="acceptactivityintable">Activate</button></td>
+					<td><button class="acceptbutton" name="action" value="acceptactivityintable">Activate</button></td>
 				<!-- <td><button name="action" value="rejectactivityintable">Deactivate</button></td> -->	
 
 
@@ -73,7 +77,7 @@
 		</c:forEach>
 	</table>
 
-
+<div id="message">${message}</div>
 
 </body>
 </html>

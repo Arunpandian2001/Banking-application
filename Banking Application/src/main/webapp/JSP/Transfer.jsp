@@ -9,9 +9,9 @@
 <body>
 
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-	<h1 style="text-align:center;justify-content:center;">MONEY TRANSFER</h1>
+	<h1>MONEY TRANSFER</h1>
 
-	<div id="transfer">
+	<div class="deposit">
 	
 	<form action="<%= request.getContextPath() %>/ProcessServlet" method="post">
 	<table class="deposittable">
@@ -23,15 +23,12 @@
 				</c:forEach>
 			</select></td>
 	</tr>
-	<tr><th>Receiver account number</th><td><input type="number" min="60000000" name="receiver" required></td></tr>
+	<tr><th>Receiver</th><td><input type="number" min="60000000" name="receiver" required></td></tr>
 	<tr><th>Amount</th><td><input type="number" min="1" name="amount" required placeholder="Enter amount"></td></tr>
-	<tr><th>Password</th><td><input type="password" name="password" required placeholder="Enter password"></td></tr>
+	<tr><th>Password</th><td><input type="password" name="password" required ></td></tr>
 	
 	</table>
-	
-	
-	<button name="action" value="transfer">Proceed</button>
-	
+	<button class="profilebutton" name="action" value="transfer">Transfer</button>
 	
 	</form>
 	

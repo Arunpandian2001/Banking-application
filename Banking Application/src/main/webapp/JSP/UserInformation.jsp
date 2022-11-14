@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer information</title>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Admin.css">
 	
 </head>
@@ -13,14 +11,16 @@
 
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ page import="java.util.Map" import="pojo.CustomerPojo"%>
-${message}
-
+	<h1>USER DETAILS</h1>
+<div id="message">${message}</div>
+<div class="details"> 
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
-		<div class="searchbar"> <label>Customer id </label><input type="number" min=7001	name="customerid" placeholder="Enter Customer id"> 
-		<button  id="searchbutton" name="action" value="searchuser"><i class="fa fa-search fa-2x" ></i></button></div>
+		<label>Customer id </label><input type="number" min=7001	name="customerid" > 
+		<button  id="searchbutton" name="action" value="searchuser">Search</button>
 
 	</form>
+	</div>
 	<table class="centertable" >
 		<tr>
 			<th>User id</th>
@@ -51,7 +51,6 @@ ${message}
 	</c:forEach>
 
 	</table>
-
 </body>
 
 

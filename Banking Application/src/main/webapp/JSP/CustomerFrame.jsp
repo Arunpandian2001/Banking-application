@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer</title>
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Menu.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/CustomerMenu.css">
 </head>
 <body style=overflow:hidden>
 <header>
@@ -31,8 +31,8 @@
 						details</button></li>
 				
 					<li>	<button class="menubutton" name="action" value=CustomerTransactionRequests>Pending
-						Transaction Requests</button></li>
-						<li><button class="menubutton" name="action" value=ToCustomerAccountRequests>Account activation Request</button>
+						Transaction</button></li>
+						<li><button class="menubutton" name="action" value=ToCustomerAccountRequests>Account activation</button>
 					<li>
 					<button class="menubutton" name="action" value=ToChangePasswordCustomer>Change
 						Password</button></li>

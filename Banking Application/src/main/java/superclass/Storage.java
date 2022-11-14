@@ -16,15 +16,13 @@ import pojo.UserPojo;
 public enum Storage {
 
 	VALUES;
-	private long userId;
-	private long accountNumber;
 	private PersistentLayerPathway load=new PersistentLayer();
 	private Map<Long,UserPojo> userDetails;
 	private Map<Long,CustomerPojo> customerDetails;
 	private Map<Long,Map<Long,Accounts_pojo>> accountDetails;
+	private Map<Long,Accounts_pojo> accountList;//account number,pojo
 	private Map<String,RequestPojo> requestDetails;
 	private List<Accounts_pojo> userSpecificAccounts;
-	private Accounts_pojo currentAccountDetails;
 	private Map<String,RequestPojo> pendingRequestDetails;
 	private Map<String,RequestPojo> acceptedRequestDetails;
 	private Map<Long,Map<String,RequestPojo>> requestDetailsMap;
@@ -33,8 +31,13 @@ public enum Storage {
 	private Map<Long,ActivityPojo> rejectedActivityRequest;
 	private Map<Long,ActivityPojo> acceptedActivityRequest;
 
-
 	
+public Map<Long, Accounts_pojo> getAccountList() {
+		return accountList;
+	}
+public void setAccountList() throws CustomException {/////////////////////////////
+		this.accountList = load.getAllAccountsMap();
+	}
 public Map<Long, ActivityPojo> getPendingActivityRequest() {
 		return pendingActivityRequest;
 	}
@@ -92,12 +95,12 @@ public Map<Long, ActivityPojo> getPendingActivityRequest() {
 		this.requestDetails = load.getRequestMap();
 	}	
 	
-	public Accounts_pojo getCurrentAccountDetails() {
-		return currentAccountDetails;
-	}
-	public void setCurrentAccountDetails(long accountNumber) throws CustomException {
-		this.currentAccountDetails = load.getAccountPojoQuery(accountNumber);
-	}
+//	public Accounts_pojo getCurrentAccountDetails() {
+//		return currentAccountDetails;
+//	}
+//	public void setCurrentAccountDetails(long accountNumber) throws CustomException {//not in basicdata
+//		this.currentAccountDetails = load.getAccountPojoQuery(accountNumber);
+//	}
 	public Map<Long, Accounts_pojo> getuserSpecificAccounts(long userId) {
 		return accountDetails.get(userId);
 	}
@@ -122,22 +125,6 @@ public Map<Long, ActivityPojo> getPendingActivityRequest() {
 		this.customerDetails = load.getCustomerMap();
 	}
 	
-	public long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(long userId) {
-		this.userId = userId;
-	}
-
-	public long getAccountNumber() {
-//		Thread.dumpStack();        Find the mistake trace in intialization
-		return accountNumber;
-	}
-
-	public void setAccountNumber(long accountNumber) {
-		this.accountNumber = accountNumber;
-	}
 	
 	public void setAccounts(long userId){
 		Map<Long,Accounts_pojo>map=getuserSpecificAccounts(userId);
@@ -153,16 +140,16 @@ public Map<Long, ActivityPojo> getPendingActivityRequest() {
 	}
 	
 	public void setBasicData() throws CustomException {
+		setPendingActivityRequest();
+		setAccountList();
+		setRejectedActivityRequest();
+		setAcceptedActivityRequest();
+		setActivityStatus();
+		setRequestDetailsMap();
+		setAcceptedRequestDetails();
 		setUserDetails();
 		setPendingRequestDetails();
 		setRequestDetails();
 		setAccountDetails();
-		setCustomerDetails();
-		setAcceptedRequestDetails();
-		setRequestDetailsMap();
-		setPendingActivityRequest();
-		setRejectedActivityRequest();
-		setAcceptedActivityRequest();
-		setActivityStatus();
 	}
 }

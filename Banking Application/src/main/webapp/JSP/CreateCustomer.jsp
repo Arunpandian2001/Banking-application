@@ -9,21 +9,22 @@
 
 </head>
 <body>
-
-<div id="createcustomer">
+<h1>CREATE CUSTOMER</h1>
+<div class="deposit">
 
 <form action="<%= request.getContextPath()%>/ProcessServlet" method="get">
-<table class="centertable">
-<tr><th>Name</th><td><input type="text" name="name" placeholder="Enter name"  required ></td></tr>
-<tr><th>Date of Birth</th><td><input type="date" name="dob" placeholder="Enter Date of Birth"  required ></td></tr>
-<tr><th>Mobile number</th><td><input type="tel" name="mobile" placeholder="Enter Mobile number"  required ></td></tr>
-<tr><th>E-mail</th><td><input type="email" name="email" placeholder="Enter E-mail id"  required ></td></tr>
-<tr><th>Address</th><td><input type="text" name="address" placeholder="Enter Address(District)"  required ></td></tr>
-<tr><th>Aadhar Number</th><td><input type="number" name="aadhar" placeholder="Enter Aadhar number"  required ></td></tr>
-<tr><th>PAN Number</th><td><input type="text" name="pan" placeholder="Enter PAN Card number"  required ></td></tr>
+<table class="deposittable">
+<tr><th>Name</th><td><input type="text" name="name" required ></td></tr>
+<tr><th>Date of Birth</th><td><input type="date" name="dob" required ></td></tr>
+<tr><th>Mobile number</th><td><input type="tel" name="mobile" required ></td></tr>
+<tr><th>E-mail</th><td><input type="email" name="email" required ></td></tr>
+<tr><th>Address</th><td><input type="text" name="address" required ></td></tr>
+<tr><th>Aadhar Number</th><td><input type="number" name="aadhar" required ></td></tr>
+<tr><th>PAN Number</th><td><input type="text" name="pan" required ></td></tr>
 <tr><th>Account type</th><td><select name="account type"
 			id="account type">
-			<option value="SAVINGS ACCOUNT">Savings account</option>
+				<option value="" hidden="hidden">Select account</option>
+						<option value="SAVINGS ACCOUNT">Savings account</option>
 			<option value="CURRENT ACCOUNT">Current account</option>
 			<option value="SALARY ACCOUNT">Salary account</option>
 			<option value="FIXED DEPOSIT">Fixed deposit</option>
@@ -37,7 +38,7 @@
 
 </table>
 
-<button name="action" value="CreateCustomer" >Proceed</button>
+<button class="profilebutton" name="action" value="CreateCustomer" >Proceed</button>
 
 
 </form>

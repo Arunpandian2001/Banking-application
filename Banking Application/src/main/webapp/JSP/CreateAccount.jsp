@@ -5,32 +5,53 @@
 <head>
 <meta charset="UTF-8">
 <title>Create account</title>
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/CSS/Admin.css">
+
 </head>
 <body>
+	<h1>CREATE ACCOUNT</h1>
+	<div class="deposit">
 
-	<form action="<%=request.getContextPath()%>/ProcessServlet"
-		method="get">
+		<form action="<%=request.getContextPath()%>/ProcessServlet"
+			method="get">
+			<table class="deposittable">
+				<tr>
+					<th>User Id</th>
+					<td><input type="number" name="customerid" required min=7001></td>
+				</tr>
+				<tr>
+					<th>Account type</th>
+					<td><select name="account type" id="account type">
+							<option value="" hidden="hidden">Select account</option>
+							<option value="SAVINGS ACCOUNT">Savings account</option>
+							<option value="CURRENT ACCOUNT">Current account</option>
+							<option value="SALARY ACCOUNT">Salary account</option>
+							<option value="FIXED DEPOSIT">Fixed deposit</option>
+							<option value="RECURRING DEPOSIT">Recurring deposit</option>
+					</select></td>
+				</tr>
+				<tr>
+					<th>Branch</th>
+					<td><select name="branch" id="branch">
+							<option value="MADURAI">Madurai</option>
+							<option value="KARAIKUDI">Karaikudi</option>
+					</select></td>
+				</tr>
+				<tr>
+					<th>Minimum Balance</th>
+					<td><input type="number" required name="minimum balance"
+						value="500" readonly></td>
+				</tr>
 
-			<label>Customer id : </label><input type="number" name="customerid" min=7001 placeholder="Enter customer id" required><br>
-		<label>Account type :</label><select name="account type"
-			id="account type">
-			<option value="SAVINGS ACCOUNT">Savings account</option>
-			<option value="CURRENT ACCOUNT">Current account</option>
-			<option value="SALARY ACCOUNT">Salary account</option>
-			<option value="FIXED DEPOSIT">Fixed deposit</option>
-			<option value="RECURRING DEPOSIT">Recurring deposit</option>
-		</select><br> 
-		<label>Branch :</label><select name="branch" id="branch">
-			<option value="MADURAI">Madurai</option>
-			<option value="KARAIKUDI">Karaikudi</option>
-		</select><br>
-		<label>Minimum Balance</label><input type="number" required name="minimum balance" value="500" readonly><br>
+			</table>
 
-		<button name="action" value="CreateAccount">Proceed</button>
+			<button class="profilebutton" name="action" value="CreateAccount">Proceed</button>
 
 
-	</form>
-	${message}
+		</form>
+	</div>
+	<div id="message">${message}</div>
 
 </body>
 </html>

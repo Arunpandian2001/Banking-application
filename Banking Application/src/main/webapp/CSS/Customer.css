@@ -9,7 +9,7 @@
     background: none;
     cursor: pointer;
     border-radius: 35px;
-    background-color: #ffffff;
+    background-color: #c7e3c3;
     width: 18%;
     margin-left: 40%;
     margin-top: 3%;
@@ -63,87 +63,65 @@
     text-align:center;
 }
 
-.transactionbutton{
-    border: none;
-    width: 113px;
-    height: 34px;
-    cursor: pointer;
-    background-color: #73d216;
-    color: black;
-    border-radius: 17px;
-    margin-left: 41%;
-}
-/*.transactionbutton:hover{
-	background-color:white;
-	color:green;
-}*/
-.transactionbutton:active{
-		background-color:white;
-		color:green;
-	 box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
 .deposit{
-	margin-top: 7%;
-    margin-left: 25%;
-    margin-right: 11%;
-    padding: 4px;
-    width: 47%;
-    height: 30vh;
+	margin-top: 2%;
+    margin-left: 23%;
+    margin-right: 0%;
+    padding: 11px;
+    width: 50%;
+    height: 34vh;
 }
 
 .deposittable input{
 	border: none;
-    width: 42%;
+    width: 67%;
     font-size: inherit;
-    border-radius: 10px;
     height: 44%;
+    background-color: #f5f5f5;
  }
 
 .deposittable select{
 	font-size: large;
     border: none;
-    width: 100%;
-    height: 100%;
+    width: 58%;
+    height: 49%;
     background: none;
-    outline: none;    
+    outline: none;    /*background: transparent;*/  
 }
 .deposittable th{
-	font-size:24px;
-	color:#5e5b5b;
-}
+	font-size: 24px;
+    color: #5e5b5b;
+    padding-left: 47px}
 .deposittable{
-	margin-top: 9%;
-    margin-left: 22%;
-    height: 23vh;
-    width: 88%;
-}
-.deposittable input{
-	background: transparent;
-    outline: none;
-    border: none;
-    height: 100%;
-    width: 100%;
+	margin-left: 20%;
+    margin-top: 7%;
+    padding: 0.5em;
+    height: 26vh;
+    width: 60%;
+    font-size: large;
+    font-family: sans-serif;
+    border: 0.5px solid black;
+    background-color:#c8f1c8;
+    text-align: left;
+    border-collapse: collapse;
 }
 .deposittable td{
-	
-	background-color:#c7e3c3;
-	color:rgb(0, 0, 0);
+	color: rgb(0, 0, 0);
+    padding-left: 127px;
 }
-.deposittable td:hover{
-	
-	background-color:green;
-	color:white;
+.deposittable textarea{
+	resize:none;
+	width: 86%;
 }
 .transaction {
-	margin-top: 2%;
-    margin-left: 38%;
+	margin-top: -5%;
+    float: right;
     width: 30%;
     height: 7vh;
     font-size: x-large;
 }
 .transaction select{
-	width: 51%;
+	width: 47%;
     height: 4.5vh;
     font-size: initial;
     margin-top: 9%;
@@ -156,140 +134,56 @@
     background-color: #73d216;
     color: black;
     border-radius: 17px;
-    margin-left: 41%;
-}
-
-.transaction button:active{
-	background-color:green;
-	color:white;
-	 box-shadow: 0 5px #666;
-  transform: translateY(4px);
 }
 .transactiontable {
-	border-collapse:collapse;
-	margin-left: 10%;
-    margin-right: auto;
-    margin-top: 82px;
-    height: 60vh;
-    width: -15%;
-    font-size: medium;
+	border-collapse: collapse;
+    margin-left: 4%;
+    /* margin-right: auto; */
+    margin-top: 4%;
+    height: 39vh;
+    /* width: 47%; */
+    font-size: large;
     font-family: sans-serif;
-    border: 2px solid black;
-    background-color: #DCDCDC;
-    text-align: center;
-	
-}
-.transactiontable thead{
-	background-color:white;
-}
-.transactiontable tbody td {
-	color:black;
-	border: 2px solid black;
-}
-.transactiontable tbody input {
-	font-size:x-large;
+    /* border: 2px solid black; */
+    background-color:#c8f1c8;
+    text-align: center;	
 }
 
-.transactiontable thead th {
-	border: 2px solid black;
-	color:black;
-	padding:10px;
-	margin-top:12%;
+.transactiontable tr:nth-child(even){
+	background-color:#c7e3c3;
+	color:rgb(0, 0, 0);
 }
+.transactiontable tr:hover{
+	
+	background-color:#f1f1f1;
+	color:green;
+}
+
+.transactiontable th {
+	border: 0.5px solid black;
+    color: #5e5b5b;
+    font-weight: 200;
+    background-color: #4ec94e;
+    font-size: large;
+    text-align: center;
+    padding: 0.5em;
+}
+
 #errormessage{
-	margin-top: 4%;
+	margin-top: 6%;
     color: red;
     justify-content: center;
     text-align: center;
     font-size: xx-large;
 }
 #message{
-	margin-top: 4%;
+	margin-top: 6%;
     color: green;
     justify-content: center;
     text-align: center;
     font-size: xx-large;
 }
-#transfer{
-	margin-top: 13%;
-    margin-left: 24%;
-    width: 45%;
-    background-color:#DCDCDC    
-}
-#transfer:hover{
-box-shadow: 10px 10px 42px 3px rgba(0,0,0,0.75);
-}
-#transfer button{
-border: none;
-    width: 113px;
-    height: 40px;
-    cursor: pointer;
-    background-color: #73d216;
-    color: black;
-    border-radius: 17px;
-    margin-left: 45%;
-}
-#transfer button :active{
-	background-color:green;
-		color:white;
-	 box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-#transaction {
-	margin-top: 4%;
-    margin-left: 38%;
-    width: 30%;
-    height: 7vh;
-    font-size: x-large;
-}
-#transaction select{
-	width: 51%;
-    height: 4.5vh;
-    font-size: initial;
-    margin-top: 9%;
-}
-#transaction button{
-	border: none;
-    width: 113px;
-    height: 34px;
-    cursor: pointer;
-    background-color: #73d216;
-    color: black;
-    border-radius: 17px;
-    
-}
 
-#transaction button:active{
-		background-color:green;
-		color:white;
-	 box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
-#transaction input{
-	border: none;
-    width: 42%;
-    font-size: inherit;
-    border-radius: 10px;
-    height: 44%;
-}
-
-.centertable select{
-	width: 49%;
-    margin: 5px;
-    font-size: medium;
-    padding: 12px
-}
-#requesttable button{
-	margin-left: 45%;
-    margin-top: 2%;
-    border: none;
-    width: 113px;
-    height: 34px;
-    cursor: pointer;
-    background-color: #73d216;
-    color: black;
-    border-radius: 17px;
-}
 #passbutton{
 	margin-top: 5%;
     margin-left: 45%;

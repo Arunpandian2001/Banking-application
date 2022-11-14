@@ -5,8 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Transaction requests</title>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Admin.css">
 	<style type="text/css"> 
 	.hide{
@@ -20,29 +18,31 @@
 
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-
+	<h1>TRANSACTION DETAILS</h1>
 	<%@ page import="pojo.TransactionPojo"%>
 
+	<div class="search">
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		<label>User id </label> <input type="number" min=7001
-			name="customerid"  placeholder="Enter Customer Id" value="<%=request.getAttribute("searchid")%>"> <br> 
+			name="customerid"  placeholder="Enter Customer Id" value="<%=request.getAttribute("searchid")%>"> &nbsp;
 			
-			<button name="action" value="displayaccounttransaction">Specific account</button>
+			<button id="specificbutton" name="action" value="displayaccounttransaction">Specific account</button>&nbsp;
 			
-			<label>Account Number</label><select name="Accounts" id="Accounts">
+			<div class="specific ${hidedropdown}"><select name="Accounts" id="Accounts">
 			<option value="" hidden="hidden">Select account</option>
 			<c:forEach var="element" items="${accountlist}">
 			<option value="${element}">${element}</option>
 			</c:forEach>
-			</select><br>
+			</select></div>
 			
 		
-		<button name="action" value="searchtransaction">Search</button>
+		<button id="search" name="action" value="searchtransaction">Search</button>
 
 	</form>
+	</div>
 	<table class="transactiontable ${hidetable}">
-		<tr>
+		<thead><tr>
 			<th>REFERENCE_ID</th>
 			<th>CUSTOMER_ID</th>
 			<th>ACCOUNT_NUMBER</th>
@@ -55,8 +55,8 @@
 			<th>CLOSING_BALANCE</th>
 			<th>STATUS</th>
 
-		</tr>
-		<c:forEach var="element" items="${transactiondetails}">
+		</tr></thead>
+		<tbody><c:forEach var="element" items="${transactiondetails}">
 			<tr>
 				<td>${element.value.getReferenceId()}</td>
 				<td>${element.value.getCustomerId()}</td>
@@ -75,11 +75,11 @@
 				<td>${element.value.getStatus()}</td>
 
 			</tr>
-		</c:forEach>
+		</c:forEach></tbody>
 
 	</table>
 
-	${message}
+<div id="message">${message}</div>	
 
 
 

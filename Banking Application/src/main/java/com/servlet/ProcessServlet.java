@@ -34,8 +34,6 @@ import superclass.Storage;
 @WebServlet("/ProcessServlet")
 
 public class ProcessServlet extends HttpServlet {
-	private static CustomerPojo customerPojo;
-	private static UserPojo adminPojo;
 	private CustomerOperations customerMethod=new CustomerOperations();
 	private AdminOperations adminOperation=new AdminOperations();
 	private static final long serialVersionUID = 1L;
@@ -50,6 +48,7 @@ public class ProcessServlet extends HttpServlet {
 		} catch (CustomException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
@@ -74,31 +73,29 @@ public class ProcessServlet extends HttpServlet {
 		}
 	}
 
-
-	private CustomerPojo getCurrentCustomerDetails(HttpServletRequest request) {
+	private long getUserId(HttpServletRequest request) {
 		HttpSession session=request.getSession(false);
-		long userId=(long) session.getAttribute("userid");
-		customerPojo=Storage.VALUES.getCustomerDetails().get(userId);
-		return customerPojo;
+		return (long) session.getAttribute("userid");		
+	}
+	
+	private CustomerPojo getCurrentCustomerDetails(HttpServletRequest request) {
+		
+		return Storage.VALUES.getCustomerDetails().get(getUserId(request));
 	}
 	
 	private UserPojo getCurrentUserDetails(HttpServletRequest request) {
-		HttpSession session=request.getSession(false);
-		long userId=(long) session.getAttribute("userid");
-		adminPojo=Storage.VALUES.getUserDetails().get(userId);
-		return adminPojo;
+		
+		return Storage.VALUES.getUserDetails().get(getUserId(request));
 	}
 	
 	private List<Long> displayAccounts(HttpServletRequest request, HttpServletResponse response) throws CustomException {
-		HttpSession session=request.getSession(false);
-		long userId=(long)session.getAttribute("userid");
-		return customerMethod.getList(userId);
+		
+		return customerMethod.getList(getUserId(request));
 	}
 
 	private List<Long> displayActivateRequestAccounts(HttpServletRequest request, HttpServletResponse response) throws CustomException{
-		HttpSession session=request.getSession(false);
-		long userId=(long)session.getAttribute("userid");
-		return customerMethod.getInActiveAccountList(userId);
+		
+		return customerMethod.getInActiveAccountList(getUserId(request));
 	}
 	private void forwardRequest(HttpServletRequest request, HttpServletResponse response,String url) throws ServletException, IOException {
 		RequestDispatcher req = request.getRequestDispatcher(url);
@@ -113,6 +110,7 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "Login":{
+			
 			long userId=Long.parseLong(request.getParameter("userId"));
 			String password=request.getParameter("password");
 			LoginLayer login=new LoginLayer();
@@ -121,10 +119,14 @@ public class ProcessServlet extends HttpServlet {
 
 			try {
 				if(login.isAccountAvailable(userId, password)) {
-					Storage.VALUES.setUserId(userId);
+					try {
+						Storage.VALUES.setBasicData();
+					} catch (CustomException e) {
+						e.printStackTrace();
+					}
 					if(login.isCustomer(userId)) {
 						if(login.isActive(userId)) {
-							customerPojo=getCurrentCustomerDetails(request);
+							CustomerPojo customerPojo=getCurrentCustomerDetails(request);
 							session.setAttribute("name",customerPojo.getName());
 							request.setAttribute("hidetable", "hide");
 							forwardRequest(request, response, URLEnum.CUSTOMERLOGIN.getURL());
@@ -138,7 +140,7 @@ public class ProcessServlet extends HttpServlet {
 						}
 					}
 					else {
-						adminPojo=getCurrentUserDetails(request);
+						UserPojo adminPojo=getCurrentUserDetails(request);
 						session.setAttribute("name", adminPojo.getName());
 						request.setAttribute("hidetable", "hide");
 						forwardRequest(request, response, URLEnum.ADMINLOGIN.getURL());
@@ -166,7 +168,7 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "save":{
-			customerPojo=getCurrentCustomerDetails(request);
+			CustomerPojo customerPojo=getCurrentCustomerDetails(request);
 			
 			 if(!request.getParameter("email").equals(customerPojo.getEmail())) {
 				String email=request.getParameter("email");
@@ -227,7 +229,7 @@ public class ProcessServlet extends HttpServlet {
 		}
 		
 		case "admin_save":{
-			adminPojo=getCurrentUserDetails(request);
+			UserPojo adminPojo=getCurrentUserDetails(request);
 			 if(!request.getParameter("email").equals(adminPojo.getEmail())) {
 				String email=request.getParameter("email");
 				adminPojo.setEmail(email);
@@ -320,8 +322,7 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case"CustomerAccounts": {
-			HttpSession session=request.getSession(false);
-			long userId=(long)session.getAttribute("userid");
+			long userId=getUserId(request);
 			Map<Long,Accounts_pojo> map=Storage.VALUES.getuserSpecificAccounts(userId);
 			request.setAttribute("accountmap", map);
 			forwardRequest(request, response, URLEnum.CUSTOMERACCOUNTSDETAILS.getURL());
@@ -341,10 +342,9 @@ public class ProcessServlet extends HttpServlet {
 		case "deposit":{
 			if(!request.getParameter("Accounts").equals("")) {
 				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
-				Storage.VALUES.setAccountNumber(accountNumber);
 				double amount=Double.parseDouble(request.getParameter("amount"));
 				try {
-					customerMethod.toDeposit(amount);
+					customerMethod.toDeposit(getUserId(request),accountNumber,amount);
 					request.setAttribute("message", "Deposit successfull");
 					request.setAttribute("accountlist", displayAccounts(request,response));
 					forwardRequest(request, response, URLEnum.TODEPOSIT.getURL());
@@ -377,10 +377,9 @@ public class ProcessServlet extends HttpServlet {
 		case "withdraw":{
 			if(!request.getParameter("Accounts").equals("")) {
 				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
-				Storage.VALUES.setAccountNumber(accountNumber);
 				double amount=Double.parseDouble(request.getParameter("amount"));
 				try {
-					customerMethod.toWithdraw(amount);
+					customerMethod.toWithdraw(getUserId(request),accountNumber,amount);
 					request.setAttribute("message", "Withdraw requested");
 					request.setAttribute("accountlist", displayAccounts(request,response));
 					forwardRequest(request, response, URLEnum.TOWITHDRAW.getURL());
@@ -414,14 +413,13 @@ public class ProcessServlet extends HttpServlet {
 		case "transfer":{
 			if(!request.getParameter("Accounts").equals("")) {
 				long userAccountNumber=Long.parseLong(request.getParameter("Accounts"));
-				Storage.VALUES.setAccountNumber(userAccountNumber);
 				long receiverAccountNumber=Long.parseLong(request.getParameter("receiver"));
 				try {
 					customerMethod.isAccountValid(receiverAccountNumber);
 					double amount=Double.parseDouble(request.getParameter("amount"));
 					String password=(String)request.getParameter("password");
 					try {
-						customerMethod.transferAmount(receiverAccountNumber, amount, password);
+						customerMethod.transferAmount(userAccountNumber,receiverAccountNumber, amount, password);
 						request.setAttribute("message", "Transfer success");
 						request.setAttribute("accountlist", displayAccounts(request,response));
 						forwardRequest(request, response, URLEnum.TOTRANSFER.getURL());
@@ -450,11 +448,10 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "ToTransactionDetails":{
-			HttpSession session=request.getSession(false);
-			long userId=(long)session.getAttribute("userid");
+			long userId=getUserId(request);
 			try {
 				List<Long> accountNumbers=customerMethod.getList(userId);
-				session.setAttribute("accountlist", accountNumbers);
+				request.setAttribute("accountlist", accountNumbers);
 			} catch (CustomException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -465,14 +462,15 @@ public class ProcessServlet extends HttpServlet {
 		}
 		case "transactiondetails":{
 			if(!request.getParameter("Accounts").equals("")) {
-				HttpSession session=request.getSession(false);
-				long userId=(long)session.getAttribute("userid");
+				long userId=getUserId(request);
 				long accountNumber=Long.parseLong(request.getParameter("Accounts"));
 				Map<String,TransactionPojo> map=new LinkedHashMap<>();
 				try {
 					map=customerMethod.getRecentTransaction(userId,accountNumber).get(userId);
-					if(map.isEmpty()) {
+					if(map==null) {
 						request.setAttribute("message", "No transaction available");
+						request.setAttribute("hidetable", "hide");
+						request.setAttribute("hidetable", "hide");
 						forwardRequest(request, response, URLEnum.TRANSACTIONDETAILS.getURL());
 						break;
 
@@ -493,8 +491,7 @@ public class ProcessServlet extends HttpServlet {
 
 		}
 		case "CustomerTransactionRequests":{
-			HttpSession session=request.getSession(false);
-			long userId=(long)session.getAttribute("userid");
+			long userId=getUserId(request);
 			Map<String, RequestPojo> map=null;
 			try {
 				map = customerMethod.getRequestMap(userId);
@@ -564,6 +561,7 @@ public class ProcessServlet extends HttpServlet {
 		case "AccountInformation":{
 			request.setAttribute("searchid", "");
 			request.setAttribute("hidetable", "hide");
+			request.setAttribute("hidedropdown", "hide");
 
 			forwardRequest(request, response, URLEnum.ACCOUNTINFORMATION.getURL());
 
@@ -647,6 +645,7 @@ public class ProcessServlet extends HttpServlet {
 		case"AdminTransaction":{
 			request.setAttribute("searchid", "");
 			request.setAttribute("hidetable", "hide");
+			request.setAttribute("hidedropdown", "hide");
 
 			forwardRequest(request, response, URLEnum.ADMINTRANSACTION.getURL());
 			break;
@@ -1243,11 +1242,10 @@ public class ProcessServlet extends HttpServlet {
 			break;
 		}
 		case "customerchangepassword":{
-			HttpSession session=request.getSession(false);
 			if(!request.getParameter("oldpassword").isEmpty()) {
 				if(!request.getParameter("newpassword").isEmpty()) {
 					if(!request.getParameter("reenterpassword").isEmpty()) {
-						long userId=(long) session.getAttribute("userid");
+						long userId=getUserId(request);
 						String oldPassword=request.getParameter("oldpassword");
 						String newPassword=request.getParameter("newpassword");
 						String reEnteredPassword=request.getParameter("reenterpassword");
@@ -1277,11 +1275,10 @@ public class ProcessServlet extends HttpServlet {
 		}
 		
 		case "adminchangepassword":{
-			HttpSession session=request.getSession(false);
 			if(!request.getParameter("oldpassword").isEmpty()) {
 				if(!request.getParameter("newpassword").isEmpty()) {
 					if(!request.getParameter("reenterpassword").isEmpty()) {
-						long userId=(long) session.getAttribute("userid");
+						long userId=getUserId(request);
 						String oldPassword=request.getParameter("oldpassword");
 						String newPassword=request.getParameter("newpassword");
 						String reEnteredPassword=request.getParameter("reenterpassword");

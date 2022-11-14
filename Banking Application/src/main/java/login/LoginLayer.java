@@ -34,7 +34,8 @@ public class LoginLayer {
 		return false;
 	}
 	
-	public boolean isActive(long userId) {
+	public boolean isActive(long userId) throws CustomException {
+		Storage.VALUES.setCustomerDetails();
 		if(Storage.VALUES.getCustomerDetails().get(userId).getStatus().equalsIgnoreCase("active")) {
 			return true;
 		}

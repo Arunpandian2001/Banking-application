@@ -4,7 +4,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -245,39 +244,27 @@ public class PersistentLayer implements PersistentLayerPathway{
 	//get all accounts of a user
 
 	@Override
-	public Accounts_pojo getAccountPojoQuery(long accountNumber) throws CustomException {
-		String query="SELECT * FROM ACCOUNTS_DETAILS WHERE ACCOUNT_NUMBER=?";
-		return getUserMap(accountNumber,query);
-	}
-	private Accounts_pojo getUserMap(long accountNumber, String query) throws CustomException {
-
+	public Map<Long,Accounts_pojo> getAllAccountsMap() throws CustomException {
+		String query="SELECT * FROM ACCOUNTS_DETAILS";
+		Map<Long,Accounts_pojo> map=new LinkedHashMap<>();
 		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
-			prepStatement.setLong(1, accountNumber);
 			try(ResultSet result=prepStatement.executeQuery()){
-				return getMapResult(result,accountNumber);
+				while(result.next()) {
+					Accounts_pojo pojo=new Accounts_pojo();
+					pojo.setCustomerId(result.getLong(1));
+					pojo.setAccountNumber(result.getLong(2));
+					pojo.setAccountType(result.getString(3));
+					pojo.setBranch(result.getString(4));
+					pojo.setBalance(result.getDouble(5));
+					pojo.setStatus(result.getString(6));
+					map.put(pojo.getAccountNumber(), pojo);
+				}
+				return map;
 			}
 		} catch (SQLException e) {
 			throw new CustomException("Exception occured while setting prepared statement",e);
 		}
 	}
-	private Accounts_pojo getMapResult(ResultSet result,long accountNumber) throws CustomException  {
-		Accounts_pojo pojo=new Accounts_pojo();
-
-		try {
-			while(result.next()) {
-				pojo.setCustomerId(result.getLong(1));
-				pojo.setAccountNumber(result.getLong(2));
-				pojo.setAccountType(result.getString(3));
-				pojo.setBranch(result.getString(4));
-				pojo.setBalance(result.getDouble(5));
-				pojo.setStatus(result.getString(6));
-			}
-			return pojo;
-		} catch (SQLException e) {
-			throw new CustomException("Exception occured while setting result statement",e);
-		}
-	}
-
 	public Map<Long, Map<String, TransactionPojo>> getTransactions(long customerId ,Long ... accountNumber) throws CustomException{
 
 		if(accountNumber.length==0) {
@@ -522,7 +509,7 @@ public class PersistentLayer implements PersistentLayerPathway{
 	}
 
 	public boolean isAccountNumberpresent(long accountNumber) throws CustomException {
-		String query="SELECT * FROM TRANSACTION_REQUESTS WHERE ACCOUNT_NUMBER=? AND STATUS='Request pending'";
+		String query="SELECT * FROM ACCOUNTS_DETAILS WHERE ACCOUNT_NUMBER=?";
 		return isAccountNumberPresent(accountNumber,query);
 	}
 		

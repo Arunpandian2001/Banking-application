@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <title>Available requests | Admin</title>
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/CSS/Admin.css">
+
+<style type="text/css"> 
+	.hide{
+	visiblity:hidden;
+		display:none;
+	
+	}
+	</style>
 </head>
 <body>
 
@@ -11,36 +20,27 @@
 
 	<%@ page import="pojo.RequestPojo"%>
 
-	${message}
-
-
+<h1>TRANSACTION REQUESTS</h1>
+	<div class="request">
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		
 		<label>User id </label> <input type="number" min=7001
-			name="customerid" placeholder="Enter Customer Id"> <br>
-			
-		
-				
-			<label> Account number</label><select name="accountnumber" id="accountnumber" >
+			name="customerid" placeholder="Enter Customer Id"> 
+		<select name="accountnumber" id="accountnumber" >
 		<option hidden="hidden" value=""  > Select account number</option>
 		
 		<c:forEach var="element" items="${accountmap}">
 		<option value="${element.key}" >${element.key}</option>
 		</c:forEach>
 		</select>
-		
-		
-		<label>Account number </label> <input type="number" min=60000000
-			name="accountnumber" placeholder="Enter Account Number"> <br>
-
-		<button name="action" value="accepttransaction">Accept</button>
-		<button name="action" value="rejecttransaction">Reject</button>
+		<button id="accept" name="action" value="accepttransaction">Accept</button>
+		<button id="reject" name="action" value="rejecttransaction">Reject</button>
 		
 	</form>
-
-	<table>
-		<tr>
+	</div>
+	<table class="centertable">
+		<thead><tr>
 			<th>CUSTOMER_ID</th>
 			<th>ACCOUNT_NUMBER</th>
 			<th>REFERENCE_ID</th>
@@ -48,14 +48,11 @@
 			<th>REQUESTED TIME</th>
 			<th>PROCESSED TIME</th>
 			<th>STATUS</th>
+			<th>ACTION</th>
 
+		</tr></thead>
 
-
-		</tr>
-
-
-
-		<c:forEach var="element" items="${pendingrequestmap}">
+		<tbody><c:forEach var="element" items="${pendingrequestmap}">
 
 			<form action="<%=request.getContextPath()%>/ProcessServlet"
 				method="post" target="adminFrame">
@@ -74,27 +71,24 @@
 							value="${element.value.getRequestedTime()}"></c:set>
 		<fmt:formatDate value="${requestedday}" pattern="dd-MM-yyyy hh:mm:ss "/>
 					</td>
-					<c:if test="${element.value.getProcessdeTime()>0}">
+					<td><c:if test="${element.value.getProcessdeTime()>0}">
 					<jsp:useBean id="processedday" class="java.util.Date" /> <c:set
 							target="${processedday}" property="time"
 							value="${element.value.getProcessdeTime()}"></c:set>${processedday}
 									<fmt:formatDate value="${processedday}" pattern="dd-MM-yyyy hh:mm:ss "/>
-					</c:if><c:if test="${element.value.getProcessdeTime()==0}">
-					-
-					</c:if>
-					<td>
+					</c:if><
 					</td>
 					<td>${element.value.getStatus()}</td>
-					<td><button name="action" value="acceptintable">Accept</button></td>
-					<td><button name="action" value="rejectintable">Reject</button></td>
+					<td><button class="acceptbutton" name="action" value="acceptintable">Accept</button>
+					<button class="rejectbutton" name="action" value="rejectintable">Reject</button></td>
 
 
 				</tr>
 
 			</form>
 
-		</c:forEach>
+		</c:forEach></tbody>
 	</table>
-
+<div id="message">${message}</div>
 </body>
 </html>

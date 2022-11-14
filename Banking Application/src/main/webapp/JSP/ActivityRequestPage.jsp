@@ -11,23 +11,20 @@
 </head>
 <body>
 
-	<h1 style="text-align: center; justify-content: center;">Request
-		Activation</h1>
+	<h1>REQUEST ACTIVATION</h1>
 
 
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-	<div id="message">${message}</div>
-	<div id="errormessage">${errormessage}</div>
-
-	<div id="requesttable">
+	
+	<div class="deposit">
 		<form action="<%=request.getContextPath()%>/ProcessServlet"
 			method="post">
-			<table class="centertable">
+			<table class="deposittable">
 				<tr>
 					<th>Accounts</th>
 					<td><select name="Accounts" id="Accounts">
-							<option value="" hidden="hidden">Select account number</option>
+							<option value="" hidden="hidden">Select account</option>
 							<c:forEach var="element" items="${accountlist}">
 								<option value="${element}">${element}</option>
 							</c:forEach>
@@ -40,13 +37,11 @@
 				</tr>
 			</table>
 
-			<button name="action" value="submitrequest">Submit</button>
-
-
+			<button class="profilebutton" name="action" value="submitrequest">Submit</button>
 		</form>
-
-
 	</div>
+<div id="message">${message}</div>
+	<div id="errormessage">${errormessage}</div>
 
 
 </body>

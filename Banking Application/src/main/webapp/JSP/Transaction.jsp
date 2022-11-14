@@ -15,8 +15,8 @@
 <body>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-	<h1 style="text-align:center;justify-content:center;">TRANSACTION DETAILS</h1>
-<div id="transaction">
+	<h1>TRANSACTION DETAILS</h1>
+<div class="transaction">
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post">
 		

@@ -27,6 +27,7 @@ public class AdminOperations {
 
 	public List<CustomerPojo> getCustomerDetails(Long ... customerIds) throws CustomException {
 		int length=customerIds.length;
+		Storage.VALUES.setCustomerDetails();
 		Map<Long,CustomerPojo> map=Storage.VALUES.getCustomerDetails();
 		List<CustomerPojo> list=new ArrayList<>();
 		if(length==0) {
