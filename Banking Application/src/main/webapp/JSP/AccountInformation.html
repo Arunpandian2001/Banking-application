@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- Admin  -->
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Accounts info</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	
+
+
+</head>
+<body>
+
+<!-- <h1>ACCOUNT DETAILS</h1>
+	<div class="search">
+		<form action="<%=request.getContextPath()%>/ProcessServlet"	method="post" target="adminFrame">
+			<label>Customer id </label> <input type="number" min=7001
+				name="customerid" value="<%=request.getAttribute("searchid")%>">&nbsp;
+			<button id="specificbutton" name="action" value="displayaccount">Specific
+				account</button>&nbsp;
+
+			<div class="specific ${hidedropdown}"><select name="Accounts" id="Accounts">
+				<option value="" hidden="hidden">Select account</option>
+				<c:forEach var="element" items="${accountlist}">
+					<option value="${element}">${element}</option>
+				</c:forEach>
+			</select></div>
+
+			<button id="search" name="action" value="accountsearch">Search</button>
+		</form>
+
+	</div>
+	<table class="centertable ${hidetable}">
+		<tr>
+			<th>CUSTOMER_ID</th>
+			<th>ACCOUNT_NUMBER</th>
+			<th>ACCOUNT_TYPE</th>
+			<th>BALANCE</th>
+			<th>BRANCH</th>
+			<th>STATUS</th>
+
+		</tr>
+		<c:forEach var="element" items="${accountdetails}">
+			<tr>
+				<td>${element.getCustomerId()}</td>
+				<td>${element.getAccountNumber()}</td>
+				<td>${element.getAccountType()}</td>
+				<td>${element.getBalance()}</td>
+				<td>${element.getBranch()}</td>
+				<td>${element.getStatus()}</td>
+
+			</tr>
+		</c:forEach>
+
+	</table>
+
+
+
+ -->
+ 	First Name<input type="text" id="fname"><br>
+ 	Last Name<input type="text" id="lname"><br>
+ 	
+ 	<button id="clicks" >Click me!</button>
+	<script>
+	
+	var obj={fname:$("fname"),lname:$("lname")};
+	var json = JSON.stringify(obj);
+		$('#clicks').click(function(){
+			$.ajax({
+				url:"../Servlets",
+				method:"POST",
+				data:json,
+				success:function(arun){
+					alert(arun);
+				},
+				error:function(){
+					alert("error");
+				}
+			});
+			});
+	
+	</script>
+</body>
+</html>

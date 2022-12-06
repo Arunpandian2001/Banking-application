@@ -19,7 +19,7 @@
 		method="post">
 		
 		<table class=logintable>
-		<tr><td></td><th id="header">Login</th></tr>
+		<tr><th id="header">Login</th><td></td></tr>
 		<tr>
 			<td>User Id </td> <td><input class="input" type="number" min=7000
 				name="userId" required ></td></tr>

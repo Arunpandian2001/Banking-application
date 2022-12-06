@@ -21,7 +21,7 @@
 		method="post" target="adminFrame">
 		
 		<label>Request Id</label> <input type="number" min=1
-			name="requestid" placeholder="Enter Request Id">
+			name="requestid" >
 		<button id="activate" value="adminaccountactive" name="action">Activate </button>		
 			<!-- <button value="adminaccountinactive" name="action">DeActivate </button> -->			
 		<button id="activateall" value="adminaccountactiveall" name="action">Activate all</button>		

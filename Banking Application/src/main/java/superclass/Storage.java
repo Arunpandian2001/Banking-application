@@ -35,7 +35,7 @@ public enum Storage {
 public Map<Long, Accounts_pojo> getAccountList() {
 		return accountList;
 	}
-public void setAccountList() throws CustomException {/////////////////////////////
+public void setAccountList() throws CustomException {
 		this.accountList = load.getAllAccountsMap();
 	}
 public Map<Long, ActivityPojo> getPendingActivityRequest() {
@@ -151,5 +151,12 @@ public Map<Long, ActivityPojo> getPendingActivityRequest() {
 		setPendingRequestDetails();
 		setRequestDetails();
 		setAccountDetails();
+	}
+	
+	public void setAllActivityStatus() throws CustomException {
+		setPendingActivityRequest();
+		setRejectedActivityRequest();
+		setAcceptedActivityRequest();
+		setActivityStatus();
 	}
 }

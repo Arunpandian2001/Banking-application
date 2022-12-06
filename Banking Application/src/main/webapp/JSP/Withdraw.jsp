@@ -32,7 +32,7 @@
 		
 		</form>
 	</div>
-		<div id="message">${message}</div>
+		<div id="${msgtype}">${message}</div>
 	
 </body>
 </html>

@@ -22,7 +22,7 @@
 		
 		<label>Accounts</label>
 		<select name="Accounts" id="Accounts">
-						<option value="" hidden="hidden">Select account number</option>
+						<option value="" hidden="hidden">Select account</option>
 		
 			<c:forEach var="element" items="${accountlist}">
 				<option value="${element}">${element}</option>
@@ -34,11 +34,11 @@
 		
 	</form>
 </div>
-<div id="message">
+<div id="${msgtype}">
 ${message}
 </div>
 
-	<table class="transactiontable ${hidetable }">
+	<table class="transactiontable ${hidetable}">
 		<thead><tr>
 			<th>ACCOUNT_NUMBER</th>
 			<th>SECONDARY_ACCOUNT</th>

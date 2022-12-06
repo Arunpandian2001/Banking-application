@@ -25,7 +25,7 @@
 	<form action="<%=request.getContextPath()%>/ProcessServlet"
 		method="post" target="adminFrame">
 		<label>User id </label> <input type="number" min=7001
-			name="customerid"  placeholder="Enter Customer Id" value="<%=request.getAttribute("searchid")%>"> &nbsp;
+			name="customerid"   value="<%=request.getAttribute("searchid")%>"> &nbsp;
 			
 			<button id="specificbutton" name="action" value="displayaccounttransaction">Specific account</button>&nbsp;
 			

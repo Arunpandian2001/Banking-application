@@ -32,10 +32,8 @@
 	
 	</form>
 	
-	<div id="message">
-	${message}
-	</div>
-	<div id="errormessage">${receivermessage}</div>
+	
+	<div id="${msgtype}">${message}</div>
 	
 	
 	</div>

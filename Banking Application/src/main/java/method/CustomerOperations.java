@@ -285,6 +285,13 @@ public class CustomerOperations extends User{
 		if(accountNumber.isEmpty()) {
 			throw new CustomException("Please enter the account number");
 		}
+		Map<Long, ActivityPojo>map=Storage.VALUES.getPendingActivityRequest();
+		for(Map.Entry<Long, ActivityPojo>element:map.entrySet()) {
+			ActivityPojo pojo=element.getValue();
+			if(pojo.getAccountNumber()==Long.parseLong(accountNumber)) {
+				throw new CustomException("Request already submitted");
+			}
+		}
 		long time=System.currentTimeMillis();
 		ActivityPojo pojo=new ActivityPojo();	
 		pojo.setAccountNumber(Long.parseLong(accountNumber));
@@ -316,16 +323,28 @@ public class CustomerOperations extends User{
 	}
 
 	public void changePassword(long userId, String oldPassword,String newPassword, String reEnteredPassword) throws CustomException {
-		UserPojo pojo=Storage.VALUES.getUserDetails().get(userId);
-		if(pojo.getPassword().matches(oldPassword)) {
-			if(newPassword.matches(reEnteredPassword)) {
-				pojo.setPassword(reEnteredPassword);
-				load.updatePassword(pojo);
+		if(oldPassword.isEmpty()) {
+			if(newPassword.isEmpty()) {
+				if(reEnteredPassword.isEmpty()) {
+					UserPojo pojo=Storage.VALUES.getUserDetails().get(userId);
+					if(pojo.getPassword().matches(oldPassword)) {
+						if(newPassword.matches(reEnteredPassword)) {
+							pojo.setPassword(reEnteredPassword);
+							load.updatePassword(pojo);
+						}else {
+							throw new CustomException("The re entered password mismatches");
+						}
+					}else {
+						throw new CustomException("The entered old password is incorrect");
+					}
+				}else {
+					throw new CustomException("Please reenter the password");
+				}
 			}else {
-				throw new CustomException("The re entered password mismatches");
+				throw new CustomException("Please enter the new password");
 			}
 		}else {
-			throw new CustomException("The entered old password is incorrect");
+			throw new CustomException("Please enter the old password");
 		}
 	}
 }

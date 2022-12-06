@@ -366,14 +366,15 @@ public class PersistentLayer implements PersistentLayerPathway{
 	}
 	@Override
 	public void updateTransactionAfterVerification(TransactionPojo pojo,String referenceId) throws CustomException {
-		String query="UPDATE TRANSACTION_DETAILS SET TIME=? , STATUS =? WHERE REFERENCE_ID=?";
+		String query="UPDATE TRANSACTION_DETAILS SET TIME=? , STATUS =?,CLOSING_BALANCE=? WHERE REFERENCE_ID=?";
 		updateAfterVerification(pojo,referenceId,query);
 	}
 	private void updateAfterVerification(TransactionPojo pojo, String referenceId,String query) throws CustomException {
 		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
 			prepStatement.setLong(1,pojo.getTimeInMillis());
 			prepStatement.setString(2, pojo.getStatus());
-			prepStatement.setString(3, referenceId);
+			prepStatement.setDouble(3, pojo.getClosingBalance());
+			prepStatement.setString(4, referenceId);
 			prepStatement.execute();
 		} catch (SQLException e) {
 			throw new CustomException("Exception occured while setting prepared statement",e);
@@ -653,14 +654,14 @@ public class PersistentLayer implements PersistentLayerPathway{
 	}
 	
 	public void processActivityStatus (ActivityPojo pojo) throws CustomException {
-		String query="UPDATE ACTIVITY_REQUEST SET PROCESSED_TIME=?, STATUS=? where REQUEST_ID=?";
+		String query="UPDATE ACTIVITY_REQUEST SET PROCESSED_TIME=?, STATUS=? where ACCOUNT_NUMBER=?";
 		processActivity(pojo,query);
 	}
 	private void processActivity(ActivityPojo pojo, String query) throws CustomException {
 		try(PreparedStatement prepStatement=getConnection().prepareStatement(query)){
 			prepStatement.setLong(1, pojo.getProcessedTime());
 			prepStatement.setString(2, pojo.getStatus());
-			prepStatement.setLong(3, pojo.getRequestId());
+			prepStatement.setLong(3, pojo.getAccountNumber());
 			prepStatement.execute();
 		} catch (SQLException e) {
 			throw new CustomException("Error occured while setting prepared statement",e);

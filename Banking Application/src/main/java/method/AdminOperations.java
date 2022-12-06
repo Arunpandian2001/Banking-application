@@ -114,6 +114,10 @@ public class AdminOperations {
 	}
 
 	public void acceptRequest(RequestPojo requestPojo) throws CustomException {
+		double amount=requestPojo.getAmount();
+		long id=requestPojo.getCustomerId();
+		long acc_No=requestPojo.getAccountNumber();
+		double balance=Storage.VALUES.getAccountDetails().get(id).get(acc_No).getBalance();
 		requestPojo.setStatus("Accepted");
 		requestPojo.setProcessdeTime(System.currentTimeMillis());
 		load.updateRequestStatus(requestPojo,requestPojo.getReferenceId());
@@ -123,6 +127,7 @@ public class AdminOperations {
 		TransactionPojo pojo=new TransactionPojo();
 		pojo.setTimeInMillis(requestPojo.getProcessdeTime());
 		pojo.setStatus("Success");
+		pojo.setClosingBalance(balance-amount);
 		load.updateTransactionAfterVerification(pojo,requestPojo.getReferenceId());
 		
 		Storage.VALUES.setBasicData();
@@ -267,7 +272,10 @@ public class AdminOperations {
 		pojo.setProcessedTime(System.currentTimeMillis());
 		pojo.setStatus("ACTIVE");
 		pojo.setRequestId(requestId);
+		pojo.setAccountNumber(Storage.VALUES.getPendingActivityRequest().get(requestId).getAccountNumber());
 		load.processActivityStatus(pojo);
+		Storage.VALUES.setAllActivityStatus();
+	
 	}
 	
 	public void deactivateAccount(long requestId) throws CustomException {
@@ -275,7 +283,9 @@ public class AdminOperations {
 		pojo.setProcessedTime(System.currentTimeMillis());
 		pojo.setStatus("INACTIVE");
 		pojo.setRequestId(requestId);
+		pojo.setAccountNumber(Storage.VALUES.getPendingActivityRequest().get(requestId).getAccountNumber());
 		load.processActivityStatus(pojo);
+		Storage.VALUES.setAllActivityStatus();
 	}
 
 

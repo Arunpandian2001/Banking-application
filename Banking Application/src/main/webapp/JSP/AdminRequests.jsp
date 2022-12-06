@@ -26,7 +26,7 @@
 		method="post" target="adminFrame">
 		
 		<label>User id </label> <input type="number" min=7001
-			name="customerid" placeholder="Enter Customer Id"> 
+			name="customerid" > 
 		<select name="accountnumber" id="accountnumber" >
 		<option hidden="hidden" value=""  > Select account number</option>
 		
@@ -76,7 +76,7 @@
 							target="${processedday}" property="time"
 							value="${element.value.getProcessdeTime()}"></c:set>${processedday}
 									<fmt:formatDate value="${processedday}" pattern="dd-MM-yyyy hh:mm:ss "/>
-					</c:if><
+					</c:if>
 					</td>
 					<td>${element.value.getStatus()}</td>
 					<td><button class="acceptbutton" name="action" value="acceptintable">Accept</button>
